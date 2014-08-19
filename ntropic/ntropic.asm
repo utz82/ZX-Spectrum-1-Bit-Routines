@@ -7,12 +7,15 @@
 	org #8000
 
 begin	di
+	push ix
+	push iy
+	ld c,0			;initialize speed counter
 reset	ld hl,ptab		;setup pattern sequence table pointer
 	
 lpt	ld e,(hl)		;read pattern pointer
 	inc hl
 	ld d,(hl)
-	xor a
+	ld a,e
 	or d
 	jr z,reset		;if d=0, loop to start
 	;jr z,exit		;or exit
@@ -27,27 +30,35 @@ lpt	ld e,(hl)		;read pattern pointer
 	
 exit	ld hl,#2758		;restore hl' for return to BASIC
 	exx
+	pop iy
+	pop ix
 	ei
 	ret
 
 ;****************************************************************************************
 main	push hl			;preserve data pointer
+	ld ix,skip1
 	
-rdata	ld a,#10
-	ld (m1),a
-	ld (m2),a
 	
-	ld a,(speed)
-	ld b,a			;timer
-	;ld c,b
+rdata	ld iyh,#10		;output switch mask
+	
+	;ld a,(speed)
+	;ld b,a			;timer
 	pop hl			;restore data pointer
 	
 	ld a,(hl)		;read drum byte
 	inc a			;and exit if it was #ff
 	ret z
 	
-	dec a
-	call nz,drum
+	ld a,(hl)		;read speed
+	and %11111110
+	ld b,a
+	
+	;dec a
+	ld a,(hl)
+	rra
+	;call nz,drum
+	call c,drum
 	
 	inc hl
 	
@@ -60,7 +71,7 @@ rdata	ld a,#10
 	
 	or a			;mute switch ch1
 	jr nz,rsk1
-	ld (m1),a
+	ld iyh,a
 	
 rsk1	ld d,a
 	ld e,a
@@ -70,14 +81,16 @@ rsk1	ld d,a
 	push hl			;read counter ch2
 	exx
 	pop hl
+	ld b,#10
 	ld a,(hl)
 	
 	or a			;mute switch ch2
 	jr nz,rsk2
-	ld (m2),a
+	ld b,a
 	
 rsk2	ld d,a
 	ld e,d
+	ld hl,skip2
 	exx
 	
 	inc hl
@@ -92,46 +105,65 @@ rsk2	ld d,a
 	push af			;mask for ch2
 
 ;****************************************************************************************
-sndlp	ex af,af'
-	dec d			;decrement counter ch1
-	jr nz,skip1		;if counter=0
+sndlp	ex af,af'	;4
+	out (#fe),a	;11
+	dec d		;4	;decrement counter ch1
+	jp nz,wait1	;10	;if counter=0
 	
 m1 equ $+1
-	xor #10			;flip output mask and reset counter
-	ld d,e
-skip1	out (#fe),a
+	xor iyh		;8	;flip output mask and reset counter
+	ld d,e		;4
+skip1	
 
-	ex af,af'
-	exx
-	pop af			;load output mask ch2	
-	dec d			;decrement counter ch2
-	jr nz,skip2		;if counter=0
-	
-m2 equ $+1	
-	xor #10			;flip output mask and reset counter
-	ld d,e
-skip2	out (#fe),a
-	push af			;preserve output mask ch2
-	exx
+	ex af,af'	;4
+	exx		;4
+	pop af		;10	;load output mask ch2
+				;44t output for ch1
 	
 	
-noise	ld a,(hl)		;read byte from ROM
-	out (#fe),a		;output whatever
+	out (#fe),a	;11
+	dec d		;4	;decrement counter ch2
+	jp nz,wait2	;10	;if counter=0
 	
-	bit 7,h			;check if ROM pointer has rolled over to #ffxx
-	jr nz,dtim
+m2 equ $+1
+	xor b		;4	;flip output mask and reset counter
+	ld d,e		;4
+skip2	
+	push af		;11	;preserve output mask ch2
+	exx		;4
 	
-	dec hl			;decrement ROM pointer
 	
-dtim	dec bc			;decrement timer
-	ld a,b
-	or c
-	jr nz,sndlp		;repeat sound loop until bc=0
+noise	ld a,(hl)	;7	;read byte from ROM
+				;43t output for ch2
+	and #10		;7	;waste some time
+	
+	out (#fe),a	;11	;output whatever
+	bit 7,h		;8	;check if ROM pointer has rolled over to #ffxx
+	jp nz,wait3	;10
+	
+	dec hl		;6	;decrement ROM pointer
+	nop		;4	;waste some time
+	
+dtim
+	dec bc		;6	;decrement timer
+	ld a,b		;4
+	or c		;4
+	jp nz,sndlp	;10	;repeat sound loop until bc=0
+			;184
 	
 	pop af			;clean stack
 	jr rdata		;read next note
 
-;****************************************************************************************	
+;****************************************************************************************
+wait1	nop		;4
+	jp (ix)		;8
+
+wait2	nop		;4
+	jp (hl)		;4
+	
+wait3	jp dtim		;10
+
+	
 drum	push hl			;preserve data pointer
 	push bc			;preserve timer
 	ld hl,#3000		;setup ROM pointer - change val for different drum sounds
