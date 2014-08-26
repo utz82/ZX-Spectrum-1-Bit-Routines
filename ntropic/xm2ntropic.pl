@@ -171,11 +171,11 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 						$temp = ord($temp);
 				
 						if (($cpval&1) == 1) {				#if bit 0 is set, it's note -> counter val.		
-							if ($temp >= 95 || $temp <=12) {
+							if ($temp >= 95 || $temp <=1) {
 								$debug++ if ($temp != 97 && $temp != 0);	#correction for stop note signal
 								$temp = 0;
 							}
-							$temp = $notetab[($temp-12)] if (($temp) >= 12 && ($temp) <= 95);
+							$temp = $notetab[($temp-1)] if (($temp) >= 1 && ($temp) <= 95);
 							$ch2[$rows] = $temp if ($mx == 0);
 							$ch3[$rows] = $temp if ($mx == 1);
 							$ch4[$rows] = 0x30 if ($mx == 2 && $temp != 0);
@@ -233,11 +233,11 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 				}
 				else {			#if we have uncompressed data
 					$temp = $cpval;
-					if ($temp >= 95 || $temp <=12) {
+					if ($temp >= 95 || $temp <=1) {
 						$debug++ if ($temp != 97 && $temp != 0);
 						$temp = 0;
 					}
-					$temp = $notetab[($temp-12)] if (($temp) >= 12 && ($temp) <= 95);
+					$temp = $notetab[($temp-1)] if (($temp) >= 1 && ($temp) <= 95);
 					$ch2[$rows] = $temp if ($mx == 0);
 					$ch3[$rows] = $temp if ($mx == 1);
 					$ch4[$rows] = 0x30 if ($mx == 2 && $temp != 0);

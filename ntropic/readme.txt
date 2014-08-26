@@ -24,7 +24,7 @@ how the music will sound on actual hardware though.
 You can set the song speed with the global "Spd" setting, or at any given point with command
 Fxx. BPM settings are ignored.
 
-Notes go in tracks 1 and 2. You can use notes from C-1 to B-7. However, notes in higher octaves
+Notes go in tracks 1 and 2. You can use notes from C#0 to B-7. However, notes in higher octaves
 are prone to detuning, which is not reflected in the xm template.
 
 You can use manual detune on both tone channels with command E5x.

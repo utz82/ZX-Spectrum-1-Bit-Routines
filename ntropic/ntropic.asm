@@ -1,15 +1,19 @@
 ;ntropic
-;beeper routine by utz 01'14 (irrlichtproject.de)
-;2ch tone, 1ch noise, click drum, size 151 bytes
-;uses ROM data in range #0000-#3800
+;beeper routine by utz 01'14, revised 08'14 (irrlichtproject.de)
+;bugfixes suggested by kphair
+;2ch tone, 1ch noise, click drum
+;uses ROM data in range #0000-~#3800
 ;this code is public domain
 
-	org #8000
+	org 32768
 
 begin	di
-	push ix
+	;push ix
 	push iy
 	ld c,0			;initialize speed counter
+	ld (oldSP),sp
+	ld sp,intStack
+
 reset	ld hl,ptab		;setup pattern sequence table pointer
 	
 lpt	ld e,(hl)		;read pattern pointer
@@ -30,8 +34,11 @@ lpt	ld e,(hl)		;read pattern pointer
 	
 exit	ld hl,#2758		;restore hl' for return to BASIC
 	exx
+	db #31			;ld sp,nn
+oldSP
+	dw 0
 	pop iy
-	pop ix
+	;pop ix
 	ei
 	ret
 
@@ -42,8 +49,6 @@ main	push hl			;preserve data pointer
 	
 rdata	ld iyh,#10		;output switch mask
 	
-	;ld a,(speed)
-	;ld b,a			;timer
 	pop hl			;restore data pointer
 	
 	ld a,(hl)		;read drum byte
@@ -53,14 +58,13 @@ rdata	ld iyh,#10		;output switch mask
 	ld a,(hl)		;read speed
 	and %11111110
 	ld b,a
-	
-	;dec a
+
 	ld a,(hl)
 	rra
-	;call nz,drum
 	call c,drum
 	
 	inc hl
+	xor a
 	
 	in a,(#fe)		;read keyboard
 	cpl
@@ -188,6 +192,12 @@ dlp4	dec d
 	pop hl
 	dec b			;adjust timing
 	ret
+
+;****************************************************************************************
+;internal stack
+
+	ds 10			;5 stack locations
+intStack
 
 ;****************************************************************************************	
 ;music data
