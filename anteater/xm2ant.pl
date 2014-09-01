@@ -79,38 +79,32 @@ print "unique patterns:\t $uniqueptns \n" if ( $ARGV[0] eq '-v' );
 #locate the pattern headers within the .xm source file and check pattern lengths
 my (@ptnoffsetlist, @ptnlengths);
 
-sysseek(INFILE, 341, 0) or die $!;
-sysread(INFILE, $ptnlengthx, 1) == 1 or die $!;
-$ptnlengths[0] = ord($ptnlengthx);
-
 $ptnoffsetlist[0] = 336;
 $fileoffset = $ptnoffsetlist[0];
-print "pattern 0 starts at $ptnoffsetlist[0], length $ptnlengths[0] rows \n" if ( $ARGV[0] eq '-v' );
-if ( ($uniqueptns) >= 2 ) {
-	for ($ix = 1; $ix < $uniqueptns; $ix++) {
-		sysseek(INFILE, $fileoffset, 0) or die $!;	#read ptn header length
-		sysread(INFILE, $headlength, 1) == 1 or die $!;
-		$headlength = ord($headlength);
-		
-		$fileoffset = ($fileoffset) + 5;		#read ptn lengths
-		sysseek(INFILE, $fileoffset, 0) or die $!;
-		sysread(INFILE, $ptnlengthx, 1) == 1 or die $!;
-		$ptnlengths[$ix] = ord($ptnlengthx);
-		
-		$fileoffset = ($fileoffset) + 2;		#read packed data length
-		sysseek(INFILE, $fileoffset, 0) or die $!;
-		sysread(INFILE, $packedlength, 1) == 1 or die $!;
-		$packedlength = ord($packedlength);
-		$fileoffset++;
-		sysseek(INFILE, $fileoffset, 0) or die $!;
-		sysread(INFILE, $plhibyte, 1) == 1 or die $!;
-		$packedlength = $packedlength + ord($plhibyte)*256;
 
-		$ptnoffsetlist[$ix] = ($ptnoffsetlist[($ix)-1]) + ($headlength) + ($packedlength);
-		print "pattern $ix starts at $ptnoffsetlist[$ix], length $ptnlengths[$ix] rows\n" if ( $ARGV[0] eq '-v' );
+for ($ix = 0; $ix < $uniqueptns; $ix++) {
+	sysseek(INFILE, $fileoffset, 0) or die $!;	#read ptn header length
+	sysread(INFILE, $headlength, 1) == 1 or die $!;
+	$headlength = ord($headlength);
 		
-		$fileoffset = $fileoffset + $packedlength + 1;	#calculate pos of next ptn header
-	}
+	$fileoffset = ($fileoffset) + 5;		#read ptn lengths
+	sysseek(INFILE, $fileoffset, 0) or die $!;
+	sysread(INFILE, $ptnlengthx, 1) == 1 or die $!;
+	$ptnlengths[$ix] = ord($ptnlengthx);
+		
+	$fileoffset = ($fileoffset) + 2;		#read packed data length
+	sysseek(INFILE, $fileoffset, 0) or die $!;
+	sysread(INFILE, $packedlength, 1) == 1 or die $!;
+	$packedlength = ord($packedlength);
+	$fileoffset++;
+	sysseek(INFILE, $fileoffset, 0) or die $!;
+	sysread(INFILE, $plhibyte, 1) == 1 or die $!;
+	$packedlength = $packedlength + ord($plhibyte)*256;
+
+	$ptnoffsetlist[($ix+1)] = ($ptnoffsetlist[($ix)]) + ($headlength) + ($packedlength);
+	print "pattern $ix starts at $ptnoffsetlist[$ix], length $ptnlengths[$ix] rows\n" if ( $ARGV[0] eq '-v' );
+		
+	$fileoffset = $fileoffset + $packedlength + 1;	#calculate pos of next ptn header
 }
 
 #generate pattern sequence
@@ -171,6 +165,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 						if (($cpval&1) == 1) {				#if bit 0 is set, it's note -> counter val.		
 							if ($temp >= 95 || $temp <=12) {
 								$debug++ if ($temp != 97 && $temp != 0);	#correction for stop note signal
+								print "Warning: ch$mx"," row$rows"," ptn$ix","\n" if ($temp != 97 && $temp != 0 && $ARGV[0] eq '-v');
 								$temp = 0;
 							}
 							$temp = $notetab[($temp-12)] if (($temp) >= 12 && ($temp) <= 95);
@@ -229,6 +224,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 					$temp = $cpval;
 					if ($temp >= 95 || $temp <=12) {
 						$debug++ if ($temp != 97 && $temp != 0);
+						print "Warning: ch$mx"," row$rows"," ptn$ix","\n" if ($temp != 97 && $temp != 0 && $ARGV[0] eq '-v');
 						$temp = 0;
 					}
 					$temp = $notetab[($temp-12)] if (($temp) >= 12 && ($temp) <= 95);
