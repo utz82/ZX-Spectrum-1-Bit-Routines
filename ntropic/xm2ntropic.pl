@@ -121,7 +121,7 @@ print OUTFILE "\tdw 0\n\n";
 
 #convert pattern data
 my (@ch1, @ch2, @ch3, @ch4, @drums, @speed);
-my ($rows, $cpval, $temp, $mx, $jx, $nx);
+my ($rows, $cpval, $temp, $temp2, $mx, $jx, $nx);
 for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 
 	$ptnusage = IsPatternUsed($ix);
