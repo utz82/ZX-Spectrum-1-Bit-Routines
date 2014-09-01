@@ -198,10 +198,10 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 						if (($cpval&8) == 8 && $temp == 15) {		#if bit 3 is set and value is $f, it's Fxx command
 							$fileoffset++;
 							sysseek(INFILE, $fileoffset, 0) or die $!;	#read next byte of row
-							sysread(INFILE, $temp, 1) == 1 or die $!;
-							$temp = ord($temp);
-							if (($cpval&16) == 16 && $temp <= 0x20) {
-								$speed[$rows] = $temp * 2;	#setting speed if bit 4 is set
+							sysread(INFILE, $temp2, 1) == 1 or die $!;
+							$temp2 = ord($temp2);
+							if (($cpval&16) == 16 && $temp2 <= 0x20) {
+								$speed[$rows] = $temp2 * 2;	#setting speed if bit 4 is set
 							}
 							$fileoffset++;
 						}
