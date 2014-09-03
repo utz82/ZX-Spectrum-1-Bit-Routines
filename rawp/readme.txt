@@ -94,4 +94,4 @@ combines them into one volume level.
 Trivia
 ======
 
-rwap stands for "Reasonably Accurate Waveform Playback".
+rawp stands for "Reasonably Accurate Waveform Playback".
