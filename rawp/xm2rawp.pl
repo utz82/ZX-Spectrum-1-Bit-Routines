@@ -158,8 +158,8 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 							if ($temp >= 95 || $temp <=12) {
 								$debug++ if ($temp != 97 && $temp != 0);	#correction for stop note signal
 								$temp = 0;
-								$n2[$rows] = $temp;
-								$n3[$rows] = $temp;
+								$n2[$rows] = $temp if ($mx == 0);
+								$n3[$rows] = $temp if ($mx == 1);
 							}
 							$temp = $notetab[($temp-12)] if (($temp) >= 12 && ($temp) <= 95);
 							$ch2[$rows] = $temp if ($mx == 0);
@@ -251,6 +251,8 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 					if ($temp >= 95 || $temp <=12) {
 						$debug++ if ($temp != 97 && $temp != 0);
 						$temp = 0;
+						$n2[$rows] = $temp if ($mx == 0);
+						$n3[$rows] = $temp if ($mx == 1);
 					}
 					$temp = $notetab[($temp-12)] if (($temp) >= 12 && ($temp) <= 95);
 					$ch2[$rows] = $temp if ($mx == 0);
