@@ -286,13 +286,13 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 							if (($cpval&16) == 16 && ($temp&0xf0) == 0x50) {	#if upper nibble = 5, it's detune
 								$temp = 8 - ($temp&15);			#ignore upper nibble
 								$ch1[$rows] = $ch1[$rows] - int($ch1[$rows]*$temp/100) if ($mx == 0);	#setting detune if bit 4 is set
-								$detune1 = $temp if ($mx == 1);
+								$detune1 = $temp if ($mx == 0);
 								$ch2[$rows] = $ch2[$rows] - int($ch2[$rows]*$temp/100) if ($mx == 1);	#setting detune if bit 4 is set
 								$detune2 = $temp if ($mx == 1);
 								$ch3[$rows] = $ch3[$rows] - int($ch3[$rows]*$temp/100) if ($mx == 2);	#setting detune if bit 4 is set
-								$detune3 = $temp if ($mx == 1);
+								$detune3 = $temp if ($mx == 2);
 								$ch4[$rows] = $ch4[$rows] - int($ch4[$rows]*$temp/100) if ($mx == 3);	#setting detune if bit 4 is set
-								$detune4 = $temp if ($mx == 1);
+								$detune4 = $temp if ($mx == 3);
 								
 							}
 							if (($cpval&16) == 16 && ($temp&0xf0) == 0xc0) {	#if upper nibble = #c, it's note cut
@@ -371,13 +371,13 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 					if ($cpval == 0x0e && ($temp&0xf0) == 0x50) {	#set detune
 						$temp = 8 - ($temp&15);			#ignore upper nibble
 						$ch1[$rows] = $ch1[$rows] - int($ch1[$rows]*$temp/100) if ($mx == 0);	#setting detune if bit 4 is set
-						$detune1 = $temp if ($mx == 1);
+						$detune1 = $temp if ($mx == 0);
 						$ch2[$rows] = $ch2[$rows] - int($ch2[$rows]*$temp/100) if ($mx == 1);	#setting detune if bit 4 is set
 						$detune2 = $temp if ($mx == 1);
 						$ch3[$rows] = $ch3[$rows] - int($ch3[$rows]*$temp/100) if ($mx == 2);	#setting detune if bit 4 is set
-						$detune3 = $temp if ($mx == 1);
+						$detune3 = $temp if ($mx == 2);
 						$ch4[$rows] = $ch4[$rows] - int($ch4[$rows]*$temp/100) if ($mx == 3);	#setting detune if bit 4 is set
-						$detune4 = $temp if ($mx == 1);
+						$detune4 = $temp if ($mx == 3);
 					}
 					if ($cpval == 0x0c && ($temp&0xf0) == 0xc0) {	#if upper nibble = #c, it's note cut
 						$nlength[$rows] = $speed - ($temp&15) if ($speed > ($temp&15));
