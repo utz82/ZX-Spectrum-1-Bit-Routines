@@ -243,10 +243,11 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 							$temp = ord($temp);
 							if (($cpval&16) == 16 && ($temp&0xf0) == 0x50) {	#if upper nibble = 5, it's detune
 								$temp = 8 - ($temp&15);			#ignore upper nibble
-								$ch1[$rows] = $ch1[$rows] - int($ch1[$rows]*$temp/100) if ($mx == 0);	#setting detune if bit 4 is set
-								$detune1 = $temp if ($mx == 1);
-								$ch2[$rows] = $ch2[$rows] - int($ch2[$rows]*$temp/100) if ($mx == 1);	#setting detune if bit 4 is set
-								$detune2 = $temp if ($mx == 1);								
+								$detune1 = int($ch1[$rows]*$temp/100) if ($mx == 0);
+								$ch1[$rows] = $ch1[$rows] - $detune1 if ($mx == 0);	#setting detune if bit 4 is set
+								
+								$detune2 = int($ch2[$rows]*$temp/100) if ($mx == 1);
+								$ch2[$rows] = $ch2[$rows] - $detune2 if ($mx == 1);	#setting detune if bit 4 is set								
 							}
 							$fileoffset++;
 						}						
@@ -303,10 +304,11 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
  					}
 					if ($cpval == 0x0e && ($temp&0xf0) == 0x50) {	#set detune
 						$temp = 8 - ($temp&15);			#ignore upper nibble
-						$ch1[$rows] = $ch1[$rows] - int($ch1[$rows]*$temp/100) if ($mx == 0);	#setting detune if bit 4 is set
-						$detune1 = $temp if ($mx == 1);
-						$ch2[$rows] = $ch2[$rows] - int($ch2[$rows]*$temp/100) if ($mx == 1);	#setting detune if bit 4 is set
-						$detune2 = $temp if ($mx == 1);
+						$detune1 = int($ch1[$rows]*$temp/100) if ($mx == 0);
+						$ch1[$rows] = $ch1[$rows] - $detune1 if ($mx == 0);	#setting detune if bit 4 is set
+								
+						$detune2 = int($ch2[$rows]*$temp/100) if ($mx == 1);
+						$ch2[$rows] = $ch2[$rows] - $detune2 if ($mx == 1);	#setting detune if bit 4 is set
 					}	
 					$fileoffset++;
 				
@@ -324,9 +326,9 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 			print OUTFILE ",instr$instr1[$rows]*256+instr$instr2[$rows]";		#writing instruments as symbols so we can define them later
 			print OUTFILE "\n";
 			
-			$ch1[$rows] = $ch1[$rows] - $detune1;
+			$ch1[$rows] = $ch1[$rows] + $detune1;
 			$detune2 = 0;
-			$ch2[$rows] = $ch2[$rows] - $detune2;
+			$ch2[$rows] = $ch2[$rows] + $detune2;
 			$detune2 = 0;		
 		}
 	
