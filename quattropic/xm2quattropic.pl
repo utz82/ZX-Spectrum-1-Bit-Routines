@@ -285,14 +285,17 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 							$temp = ord($temp);
 							if (($cpval&16) == 16 && ($temp&0xf0) == 0x50) {	#if upper nibble = 5, it's detune
 								$temp = 8 - ($temp&15);			#ignore upper nibble
-								$ch1[$rows] = $ch1[$rows] - int($ch1[$rows]*$temp/100) if ($mx == 0);	#setting detune if bit 4 is set
 								$detune1 = int($ch1[$rows]*$temp/100) if ($mx == 0);
-								$ch2[$rows] = $ch2[$rows] - int($ch2[$rows]*$temp/100) if ($mx == 1);	#setting detune if bit 4 is set
+								$ch1[$rows] = $ch1[$rows] - $detune1 if ($mx == 0);	#setting detune if bit 4 is set
+								
 								$detune2 = int($ch2[$rows]*$temp/100) if ($mx == 1);
-								$ch3[$rows] = $ch3[$rows] - int($ch3[$rows]*$temp/100) if ($mx == 2);	#setting detune if bit 4 is set
+								$ch2[$rows] = $ch2[$rows] - $detune2 if ($mx == 1);	#setting detune if bit 4 is set
+								
 								$detune3 = int($ch3[$rows]*$temp/100) if ($mx == 2);
-								$ch4[$rows] = $ch4[$rows] - int($ch4[$rows]*$temp/100) if ($mx == 3);	#setting detune if bit 4 is set
+								$ch3[$rows] = $ch3[$rows] - $detune3 if ($mx == 2);	#setting detune if bit 4 is set 
+								
 								$detune4 = int($ch4[$rows]*$temp/100) if ($mx == 3);
+								$ch4[$rows] = $ch4[$rows] - $detune4 if ($mx == 3);
 								
 							}
 							if (($cpval&16) == 16 && ($temp&0xf0) == 0xc0) {	#if upper nibble = #c, it's note cut
@@ -370,14 +373,17 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 # 					}
 					if ($cpval == 0x0e && ($temp&0xf0) == 0x50) {	#set detune
 						$temp = 8 - ($temp&15);			#ignore upper nibble
-						$ch1[$rows] = $ch1[$rows] - int($ch1[$rows]*$temp/100) if ($mx == 0);	#setting detune if bit 4 is set
 						$detune1 = int($ch1[$rows]*$temp/100) if ($mx == 0);
-						$ch2[$rows] = $ch2[$rows] - int($ch2[$rows]*$temp/100) if ($mx == 1);	#setting detune if bit 4 is set
+						$ch1[$rows] = $ch1[$rows] - $detune1 if ($mx == 0);	#setting detune if bit 4 is set
+								
 						$detune2 = int($ch2[$rows]*$temp/100) if ($mx == 1);
-						$ch3[$rows] = $ch3[$rows] - int($ch3[$rows]*$temp/100) if ($mx == 2);	#setting detune if bit 4 is set
+						$ch2[$rows] = $ch2[$rows] - $detune2 if ($mx == 1);	#setting detune if bit 4 is set
+								
 						$detune3 = int($ch3[$rows]*$temp/100) if ($mx == 2);
-						$ch4[$rows] = $ch4[$rows] - int($ch4[$rows]*$temp/100) if ($mx == 3);	#setting detune if bit 4 is set
+						$ch3[$rows] = $ch3[$rows] - $detune3 if ($mx == 2);	#setting detune if bit 4 is set 
+								
 						$detune4 = int($ch4[$rows]*$temp/100) if ($mx == 3);
+						$ch4[$rows] = $ch4[$rows] - $detune4 if ($mx == 3);
 					}
 					if ($cpval == 0x0c && ($temp&0xf0) == 0xc0) {	#if upper nibble = #c, it's note cut
 						$nlength[$rows] = $speed - ($temp&15) if ($speed > ($temp&15));
@@ -407,13 +413,13 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 			printf(OUTFILE "%x", $ch4[$rows]);
 			print OUTFILE "\n";
 		
-			$ch1[$rows] = $ch1[$rows] - $detune1;
+			$ch1[$rows] = $ch1[$rows] + $detune1;
 			$detune1 = 0;
-			$ch2[$rows] = $ch2[$rows] - $detune2;
+			$ch2[$rows] = $ch2[$rows] + $detune2;
 			$detune2 = 0;
-			$ch3[$rows] = $ch3[$rows] - $detune3;
+			$ch3[$rows] = $ch3[$rows] + $detune3;
 			$detune3 = 0;
-			$ch4[$rows] = $ch4[$rows] - $detune4;
+			$ch4[$rows] = $ch4[$rows] + $detune4;
 			$detune4 = 0;
 		}
 	
