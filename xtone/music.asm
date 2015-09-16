@@ -1,10 +1,9 @@
 ;sequence
-;loop
+loop
 	dw ptn0
 	dw ptn1
 	dw ptn4
 	dw ptn5
-loop
 	dw ptn2
 	dw ptn3
 	dw ptn2
