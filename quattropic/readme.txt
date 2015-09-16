@@ -26,6 +26,10 @@ The following tools are required to convert an XM to a quattropic binary:
 pasmo and Perl must be installed in your search path, or must reside within the
 quattropic folder.
 
+You can also convert your XMs without the use of Perl. However, I've only
+started to learn C++, so the Perl-less converter (xm2quattropic.exe resp.
+xm2quattropic) is still in experimental stage.
+
 
 
 Composing Music
@@ -62,7 +66,9 @@ in main.asm.
 When you're done with composing, simply run the provided compile.bat resp. 
 compile.sh scripts to convert your XM file into a ZX Spectrum .tap file.
 
-
+To convert the XM without Perl, use noperl-compile.bat resp. noperl-compile.sh.
+However, as mentioned before, the Perl-less converter is still in experimental
+stage.
 
 
 Data Format
