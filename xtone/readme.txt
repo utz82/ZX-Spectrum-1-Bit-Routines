@@ -37,7 +37,7 @@ When using the XM template, consider the following:
 
 - You may not change the number of channels.
 - Notes must be in channel 1-6.
-- Drums may be in any channel, but you cannot set more than one per row.
+- Drums must be in channel 7-8, and you cannot set more than one per row.
 - Changes to the BPM value or to the instruments have no effect.
 - You may change the speed value globally, or at any point by using command Fxx, 
   where xx must be in the range of 0-$1f.

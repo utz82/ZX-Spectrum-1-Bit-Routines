@@ -42,9 +42,11 @@ When using the XM template, consider the following:
 - You can use effect E5x (detune) on tone channels. All other effects will be
 ignored.
 
-- Tones must be in channel 1 or 2. You can use any note from C-0 to B-4.
-However, low notes will be detuned, and notes in the 4th octave exceed the
-Nyquist limit, possibly leading to some rather strange effects.
+- Tones must be in channel 1 or 2. The click drum must be in channel 3 or 4.
+
+- You can use any note from C-0 to B-4. However, low notes will be detuned, and
+notes in the 4th octave exceed the Nyquist limit, possibly leading to some
+rather strange effects.
 
 By default, the player will loop back to the start of the song. You can change
 the loop point manually, by moving the "loop" label in music.asm to another
