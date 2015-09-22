@@ -31,7 +31,8 @@ Things changed:
 - Channel volume difference is less pronounced than in the original Tritone. The
   loudest channel is ch2 (40%), followed by ch3 (32%), followed by ch1 (28%).
   
-- Data format is changed completely, so original 
+- Data format is changed completely, so original Tritone songs will not be
+  compatible.
 
 Things removed:
 
@@ -39,8 +40,8 @@ Things removed:
   data. I believe they are no longer needed, given the added functionality.
 
 Unfortunately there is currently no editor available for this routine, and it
-would be too complex to simulate it via an XM template. So, for the time being,
-the only option is to code the music by hand, in asm.
+would be too complex to simulate via an XM template. So, for the time being, the
+only option is to code the music by hand, in asm.
 
 
 
@@ -66,29 +67,18 @@ loop
 To disable looping, uncomment line 36 in main.asm.
 
 
-Pattern data consists of 7 words per row, which are as follows
+Pattern data consists of 6 words per row, which are as follows
 
 offset	function
 (words)
 
-+0	tempo*256 + noise flag (#00 = noise disabled, #01 = noise enabled)
-+1	duty_ch1*256 + duty_ch2
-+2	modulator mode (#ac00 - xor; #b400 - or, #a400 - and, #0000 - nop)
++0	tempo*256 + noise flag (#8000 = noise enabled, 0 = noise disabled)
+        + duty_ch1
++1	duty_ch2*256 + duty_ch3
++2	base frequency ch3
 +3	base frequency ch2
 +4	base frequency ch1
-+5	base frequency modulator
 +6	fx table pointer
-
-An example row in a pattern:
-
-	dw #2000,#8080,#ac00,#0100,#0400,#1000,fxtab01
-
-In this example, the tempo will be set to #20 ticks, and noise is off. Duty 
-for both channels will be set to #80 (50:50 square wave). The modulator runs
-in XOR mode. Channel 2 plays a low bass frequency. Channel 1 plays a mid-
-range frequency, with the modulator running at 2x the frequency of ch1, 
-emphasizing on the upper harmonics of ch1. The effects table @fxtab01 will 
-be executed.
 
 Patterns must be terminated with a 0-byte.
 
