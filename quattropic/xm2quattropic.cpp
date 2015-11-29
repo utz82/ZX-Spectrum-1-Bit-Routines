@@ -263,6 +263,8 @@ int main(int argc, char *argv[]){
 									if (m == 2) duty3[rows] = 0x10;
 									if (m == 3) duty4[rows] = 0x10;
 								}
+								if (temp < 5 && m == 3 && mode[rows] == 0x80) mode[rows] = 4;
+								if (temp < 5 && m == 3 && mode[rows] != 4) mode[rows] = 0;
 								if (temp >= 5 && temp <= 8 && m != 3) cout << "WARNING: Noise instrument used on wrong channel at ptn " << i << endl;
 								if (temp >= 9 && temp <= 10 && m != 2) cout << "WARNING: Slide instrument used on wrong channel\n";
 								if (mode[rows] == 0 && temp >= 5 && temp <= 8) mode[rows] = 1;
@@ -366,6 +368,8 @@ int main(int argc, char *argv[]){
 							if (m == 2) duty3[rows] = 0x10;
 							if (m == 3) duty4[rows] = 0x10;
 						}
+						if (temp < 5 && m == 3 && mode[rows] == 0x80) mode[rows] = 4;
+						if (temp < 5 && m == 3 && mode[rows] != 4) mode[rows] = 0;
 						if (temp >= 5 && temp <= 8 && m != 3) cout << "WARNING: Noise instrument used on wrong channel at ptn " << i << endl;
 						if (temp >= 9 && temp <= 10 && m != 2) cout << "WARNING: Slide instrument used on wrong channel\n";
 						if (mode[rows] == 0 && temp >= 5 && temp <= 8) mode[rows] = 1;
