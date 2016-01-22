@@ -44,7 +44,11 @@ When using the XM template, consider the following:
 - Instruments 9-A (slide) can only be used in channel 3.
 
 The pitch of the noise instruments impacts timbre, but not necessarily the 
-actual pitch. Also, octaves are disregarded for noise instruments.
+actual pitch. Also, octaves are disregarded for noise instruments. The XM
+template does not accurately reproduce this behaviour.
+
+The slide instruments (9, A) will reset on every row. This behaviour is not
+reproduced in the XM template.
 
 You can use effect ECx (note cut) on channel 4. You can also use effect E5x
 (detune) on all of the channels. All other effects will be ignored.

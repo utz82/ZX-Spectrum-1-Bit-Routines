@@ -150,15 +150,14 @@ int main(int argc, char *argv[]){
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
-		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111, 0 };
+		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111, 0};
 
 
 	//convert pattern data	
 	int m, note, temp3;
-	unsigned char rows;
+	unsigned char rows, mode;
 	unsigned char noteval = 0;
 	char temp;
-	//int temp;
 	unsigned duty12, duty34, modlen;
 	int detune1 = 0;
 	int detune2 = 0;
@@ -166,7 +165,7 @@ int main(int argc, char *argv[]){
 	int detune4 = 0;
 	int debug = 0;	
 	unsigned ch1[256], ch2[256], ch3[256], ch4[256];
-	unsigned char duty1[256], duty2[256], duty3[256], duty4[256], mode[256], nlength[256];
+	unsigned char duty1[256], duty2[256], duty3[256], duty4[256], nlength[256], insch3[256], insch4[256];
 	
 	for (i = 0; i <= (uniqueptns)-1; i++) {
 	
@@ -181,8 +180,9 @@ int main(int argc, char *argv[]){
 			duty2[0] = 0x80;
 			duty3[0] = 0x80;
 			duty4[0] = 0x80;
-			mode[0] = 0;
 			nlength[0] = 0xff;
+			insch3[0] = 0;
+			insch4[0] = 0;
 			
 			fileoffset = ptnoffsetlist[i] + 9;
 			
@@ -198,12 +198,10 @@ int main(int argc, char *argv[]){
 				duty3[rows] = duty3[rows-1];
 				duty4[rows] = duty4[rows-1];
 				
-// 				if ((mode[rows-1] == 1 || mode[rows-1] == 0x80) && ch4[rows-1] != 0) {
-// 					mode[rows] = 1;
-// 				} else {
-// 					mode[rows] = 0;
-// 				}
-				mode[rows] = mode[rows-1];
+				insch3[rows] = insch3[rows-1];
+				insch4[rows] = insch4[rows-1];
+
+				mode = 0;
 				
 				nlength[rows] = 0xff;
 				
@@ -226,21 +224,14 @@ int main(int argc, char *argv[]){
 							if ((pp&1) == 1) {	//if bit 0 is set, it's note -> counter val.		
 											
 								if (temp == 97) temp = 0;		//silence
-								//noteval = temp;
 								
 								note = notetab[static_cast<int>(temp)];
 								if (m == 0) ch1[rows] = note;
 								if (m == 1) ch2[rows] = note;
-								if (m == 2) {
-									ch3[rows] = note;
-									if (note == 0 && mode[rows] == 1) mode[rows] = 0;
-									else if (note == 0 && mode[rows] == 0x80) mode[rows] = 4;
-								}
+								if (m == 2) ch3[rows] = note;
 								if (m == 3) {
 									ch4[rows] = note;
 									noteval = temp;
-									if (note == 0 && mode[rows] == 4) mode[rows] = 0;
-									else if (note == 0 && mode[rows] == 0x80) mode[rows] = 1;
 								}
 								
 								fileoffset++;
@@ -274,19 +265,21 @@ int main(int argc, char *argv[]){
 									if (m == 2) duty3[rows] = 0x10;
 									if (m == 3) duty4[rows] = 0x10;
 								}
-								if (temp < 5 && m == 2 && mode[rows] == 0x80) mode[rows] = 1;
- 								if (temp < 5 && m == 2 && mode[rows] != 1) mode[rows] = 0;
- 								if (temp < 5 && m == 3 && mode[rows] == 0x80) mode[rows] = 4;
- 								if (temp < 5 && m == 3 && mode[rows] != 4) mode[rows] = 0;
- 								if (temp >= 5 && temp <= 8 && m != 3) cout << "WARNING: Noise instrument used on wrong channel at ptn " << i << endl;
- 								if (temp >= 9 && temp <= 10 && m != 2) cout << "WARNING: Slide instrument used on wrong channel\n";
- 								if (mode[rows] == 0 && temp >= 5 && temp <= 8) mode[rows] = 1;
- 								if (mode[rows] == 0 && temp >= 9) mode[rows] = 4;
- 								if (mode[rows] > 0 && temp >= 9) mode[rows] = 0x80;
-							
-								if ((mode[rows] == 1 || mode[rows] == 0x80) && ch4[rows] > 0) {
-									ch4[rows] = noisetab[noteval];
+								
+								if (m == 2) {
+									if (temp < 9) insch3[rows] = 0;
+									if (temp >= 9) insch3[rows] = 1;
+									if (temp > 4 && temp < 9) cout << "WARNING: noise instrument used on wrong channel at ptn " << i << endl;
 								}
+								
+								if (m == 3) {
+									if (temp < 5 || temp > 8) insch4[rows] = 0;
+									if (temp >= 5 && temp <= 8) insch4[rows] = 1;
+									if (temp > 8) cout << "WARNING: slide instrument used on wrong channel at ptn " << i << endl;
+									cout << "ptn " << +i << " row " << +rows << " ch4instr " << +temp << " ch4mode " << +insch4[rows] << endl;	//debug
+								}
+								
+								if (m < 2 && temp > 4) cout << "WARNING: noise or slide instrument used on wrong channel at ptn " << i << endl;
 
 								fileoffset++;
 								INFILE.seekg(fileoffset, ios::beg);	//read next byte
@@ -342,21 +335,15 @@ int main(int argc, char *argv[]){
 						//read notes
 						temp = pp;
 						if (temp == 97) temp = 0;		//silence
-						noteval = temp;
+						//noteval = temp;
 							
 						note = notetab[static_cast<int>(temp)];
 						if (m == 0) ch1[rows] = note;
 						if (m == 1) ch2[rows] = note;
-						if (m == 2) {
-							ch3[rows] = note;
-							if (note == 0 && mode[rows] == 1) mode[rows] = 0;
-							else if (note == 0 && mode[rows] == 0x80) mode[rows] = 4;
-						}
+						if (m == 2) ch3[rows] = note;
 						if (m == 3) {
 							ch4[rows] = note;
 							noteval = temp;
-							if (note == 0 && mode[rows] == 4) mode[rows] = 0;
-							else if (note == 0 && mode[rows] == 0x80) mode[rows] = 1;
 						}
 							
 						fileoffset++;
@@ -390,19 +377,21 @@ int main(int argc, char *argv[]){
 							if (m == 2) duty3[rows] = 0x10;
 							if (m == 3) duty4[rows] = 0x10;
 						}
-						if (temp < 5 && m == 2 && mode[rows] == 0x80) mode[rows] = 1;
-						if (temp < 5 && m == 2 && mode[rows] != 1) mode[rows] = 0;
- 						if (temp < 5 && m == 3 && mode[rows] == 0x80) mode[rows] = 4;
- 						if (temp < 5 && m == 3 && mode[rows] != 4) mode[rows] = 0;
- 						if (temp >= 5 && temp <= 8 && m != 3) cout << "WARNING: Noise instrument used on wrong channel at ptn " << i << endl;
- 						if (temp >= 9 && temp <= 10 && m != 2) cout << "WARNING: Slide instrument used on wrong channel\n";
- 						if (mode[rows] == 0 && temp >= 5 && temp <= 8) mode[rows] = 1;
- 						if (mode[rows] == 0 && temp >= 9) mode[rows] = 4;
- 						if (mode[rows] > 0 && temp >= 9) mode[rows] = 0x80;
 						
-						if ((mode[rows] == 1 || mode[rows] == 0x80) && ch4[rows] > 0) {
-							ch4[rows] = noisetab[noteval];
+						if (m == 2) {
+							if (temp < 9) insch3[rows] = 0;
+							if (temp >= 9) insch3[rows] = 1;
+							if (temp > 4 && temp < 9) cout << "WARNING: noise instrument used on wrong channel at ptn " << i << endl;
 						}
+								
+						if (m == 3) {
+							if (temp < 5 || temp > 8) insch4[rows] = 0;
+							if (temp >= 5 && temp <= 8) insch4[rows] = 1;
+							if (temp > 8) cout << "WARNING: slide instrument used on wrong channel at ptn " << i << endl;
+						}
+								
+						if (m < 2 && temp > 4) cout << "WARNING: noise or slide instrument used on wrong channel at ptn " << i << endl;
+
 						
 						//read and ignore volume
 						fileoffset++;
@@ -454,7 +443,15 @@ int main(int argc, char *argv[]){
 					}
 				}
 				
-				modlen = (nlength[rows]*256)+mode[rows];
+				if (insch3[rows] == 1) mode = 4; 
+				if (insch4[rows] == 1 ) mode = 1;
+				if (insch3[rows] == 1 && insch4[rows] == 1 ) mode = 0x80;
+				if (mode == 1 && ch4[rows] == 0) mode = 0;
+				if (mode == 0x80 && ch4[rows] == 0) mode = 4;
+				
+				if ((mode == 1 || mode == 0x80) && ch4[rows] != 0) ch4[rows] = noisetab[noteval];
+//		
+				modlen = (nlength[rows]*256)+mode;
 				duty12 = duty1[rows]*256 + duty2[rows];
 				duty34 = duty3[rows]*256 + duty4[rows];
 		
@@ -477,8 +474,6 @@ int main(int argc, char *argv[]){
 	
 	}
 
-
-	//if (isPatternUsed(3)) cout << "pattern 3 is used!\n";
 
 	if (debug >= 1) cout << "WARNING: " << debug << "out of range note(s) replaced with rests.\n";
 	cout << "Success!\n";
