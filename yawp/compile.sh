@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#./xm2rawp2.pl
+./xm2yawp.pl
 #zmakebas -a 10 -o loader.tap loader.bas
 pasmo -d --alocal --tap main.asm main.tap #main.lst
 #pasmo -d --alocal main.asm main.bin

@@ -32,8 +32,8 @@ Composing Music
 ***************
 
 You can compose music for the yawp player using the XM template that comes 
-bundled with Octode PWM. However, this will only give a very rough estimate of
-how the music will sound on an actual ZX Spectrum.
+bundled with yawp. However, this will only give a very rough estimate of how 
+the music will sound on an actual ZX Spectrum.
 
 When using the XM template, consider the following:
 
@@ -70,10 +70,10 @@ Step 3: Sample a C-4 note, add it to the XM template as a new instrument, and
 yawp Sample Data Format
 ***********************
 
-qaop lets you use your own samples, or rather looped waveforms. Samples must be included in
+yawp lets you use your own samples, or rather looped waveforms. Samples must be included in
 samples.asm. Check out the /samples folder for inspiration.
 
-qaop samples have a fixed length of 256 bytes. The format is unsigned PCM, meaning all bytes
+yawp samples have a fixed length of 256 bytes. The format is unsigned PCM, meaning all bytes
 in the sample denote a relative volume. Sample byte volumes are defined as follows:
     #00 - silence
     #10 - 33% volume
