@@ -23,9 +23,9 @@ with it is by hand-coding all the data in asm. For reference, an example note
 table has been included.
 
 You can also configure a few things in main.asm. To disable looping, uncomment
-line 39. If you want more fine-grained speed control, replace both nops in line
-114 and 115 with "dec b". If you don't want to use any effects, comment out
-lines 84, 280-288, and 292-487, and omit the fx pointers in the pattern data.
+line 41. If you want more fine-grained speed control, replace both nops in line
+116 and 117 with "dec b". If you don't want to use any effects, comment out
+lines 85, 282-290, and 295-491, and omit the fx pointers in the pattern data.
 
 
 ================================== WAVETABLES ==================================

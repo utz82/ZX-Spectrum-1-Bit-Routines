@@ -42,7 +42,7 @@ ptn01
 	dw #0800,#2000,smp2,#0111,smp14,fxtab4
 	dw #0800,#2000,smp3,#0111,smp15,fxtab4
 	dw #0800,#2000,smp4,#0111,smp16,fxtab4
-	dw #0800,#2000,smp5,#0111,smp16,fxtab4
+	dw #0800,#2000,smp5,#0111,smp17,fxtab4
 	
 	dw #0800,#0040,smp10,#1000,smp1,fxtab0
 	dw #0800,#0040,smp11,#1307,smp1,fxtab0
@@ -52,7 +52,7 @@ ptn01
 	dw #0800,#2000,smp6,#0111,smp14,fxtab4
 	dw #0800,#2000,smp7,#0111,smp15,fxtab4
 	dw #0800,#2000,smp8,#0111,smp16,fxtab4
-	dw #0800,#2000,smp9,#0111,smp16,fxtab4
+	dw #0800,#2000,smp9,#0111,smp17,fxtab4
 
 	dw #40
 	

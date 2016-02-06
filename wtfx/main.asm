@@ -20,7 +20,9 @@ init
 	ld (maskKempston),a
 _skip	
 	di
+	ld c,#fe
 	exx
+	ld c,#fe
 	push hl			;preserve HL' for return to BASIC
 	ld (oldSP),sp
 	ld hl,musicdata
@@ -56,12 +58,14 @@ rdptn
 	in a,(#1f)		;read joystick
 maskKempston equ $+1
 	and #1f
-	ld c,a
+	ld d,a
 	in a,(#fe)		;read kbd
 	cpl
-	or c
+	or d
 	and #1f
 	jp nz,exit
+	
+	ld b,a			;set timer lo-byte
 
 patpntr equ $+1			;fetch pointer to pattern data
 	ld sp,0
@@ -69,16 +73,13 @@ patpntr equ $+1			;fetch pointer to pattern data
 	pop af
 	jr z,rdseq
 	
-	ld b,0			;set timer
-	ld c,#fe
-	
 	pop de			;freq.ch1
 	pop hl			;smp.ch1
 	
 	exx
 	
-	ld b,a
-	ld c,#fe
+	ld b,a			;timer hi-byte
+	
 	pop de			;freq.ch2
 	pop hl			;smp.ch2
 	pop ix			;fx table address
@@ -91,7 +92,7 @@ patpntr equ $+1			;fetch pointer to pattern data
 	push hl
 	push de
 	
-	ld hl,0			;prepare add counter ch2
+	ld hl,0			;clear add counter ch2
 	exx
 	ex af,af'
 	
@@ -99,7 +100,8 @@ patpntr equ $+1			;fetch pointer to pattern data
 	push de
 	
 	ld a,(hl)		;load initial sample ch1
-	ld hl,0			;prepare add counter ch1
+	ld h,b			;clear add counter ch1
+	ld l,b
 	
 
 playRow
@@ -488,7 +490,7 @@ ts2
 	jp nz,playRow
 	jp rdptn
 	
-buffer					;5 words: freq.ch1, smp.ch1, freq.ch2, smp.ch2, fx table
+buffer					;4 words: freq.ch1, smp.ch1, freq.ch2, smp.ch2
 	ds 8
 	
 samples
