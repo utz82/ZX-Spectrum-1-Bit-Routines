@@ -13,6 +13,8 @@ Furthermore, you can activate a fast pitch slide on one of the channels to
 produce percussive sounds. You can switch between the modes (tone/noise/slide) 
 on a step-by-step basis.
 
+The quattropic package includes the ZMakeBas utility by Russell Marks.
+
 
 Requirements
 ************
@@ -24,6 +26,9 @@ The following tools are required to convert an XM to a quattropic binary:
 
 pasmo must be installed in your search path, or must reside within the
 quattropic folder.
+
+When compiling the quattropic package from source, you first need to build 
+xm2quattropic.cpp and zmakebas.c.
 
 
 Composing Music
@@ -61,8 +66,22 @@ the loop point manually, by moving the "loop" label in music.asm to another
 row in the sequence. You can disable looping altogether by uncommenting line 47
 in main.asm.
 
-When you're done with composing, simply run the provided compile.bat resp. 
-compile.sh scripts to convert your XM file into a ZX Spectrum .tap file.
+When you're done with composing, simply run the provided compile.cmd resp. 
+compile.sh scripts to convert your XM file into a ZX Spectrum .tap file. 
+
+compile.cmd/.sh will accept the following optional parameters (in the exact 
+order listed here):
+
+  -t "song title"
+  -c "composer name"
+  -a address (must be a decimal number between 32768 and ~60000)
+  
+Example: compile.cmd -t "My Song" -c "Great Musician" -a 40000
+This will create a BASIC screen which reads "My Song by Great Musician", and 
+assemble the player+data at address 40000.
+
+Alternatively, you can use interactive-compile.cmd/.sh to interactively set
+these parameters.
 
 
 Data Format
