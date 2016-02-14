@@ -13,7 +13,8 @@
 ;BC' = timer
 
 
-	org #8000
+	;org #8000
+	org origin
 
 	di
 init
