@@ -28,6 +28,16 @@ CMOS Z80 on models without an AY chip. To use this version, back up main.asm,
 and rename main-autodetect.asm to main.asm.
 
 
+REQUIREMENTS
+============
+
+You'll need the pasmo assembler installed or present in your search path in
+order to use the XM converter.
+
+When building from source, you'll also need to compile xm2fluid.cpp and 
+zmakebas.c.
+
+
 COMPOSING MUSIC
 ===============
 
