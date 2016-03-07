@@ -142,7 +142,7 @@ int main(int argc, char *argv[]){
 		0x3000, 0x32DB, 0x35E1, 0x3915, 0x3C7A, 0x4013, 0x43E2, 0x47EB, 0x4C32, 0x50BA, 0x5587, 0x5A9D,
 		0x6000, 0x65B5, 0x6BC2, 0x722A, 0x78F4, 0x8025, 0x87C4, 0x8FD6, 0x9864, 0xA174, 0xAB0E, 0xB539 };
 	 
-	const unsigned noisetab[97] = { 
+	const unsigned noisetab[98] = { 0,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
@@ -150,22 +150,22 @@ int main(int argc, char *argv[]){
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
 		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111,
-		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111, 0};
+		0xcd44, 0x0cba, 0x0744, 0x099a, 0x188b, 0x18bb, 0xdd55, 0xed66, 0xc400, 0xb400, 0x0143, 0xc111, 0xcd44 };
 
 
 	//convert pattern data	
-	int m, note, temp3;
-	unsigned char rows, mode;
-	unsigned char noteval = 0;
+	int m, note1, note2, note3, note4;
+	unsigned char rows;
 	char temp;
-	unsigned duty12, duty34, modlen;
-	int detune1 = 0;
-	int detune2 = 0;
-	int detune3 = 0;
-	int detune4 = 0;
+	//int temp;
+	unsigned duty12, duty34, mode, modlen;
+	int detune1 = 8;
+	int detune2 = 8;
+	int detune3 = 8;
+	int detune4 = 8;
 	int debug = 0;	
 	unsigned ch1[256], ch2[256], ch3[256], ch4[256];
-	unsigned char duty1[256], duty2[256], duty3[256], duty4[256], nlength[256], insch3[256], insch4[256];
+	unsigned char instr1[256], instr2[256], instr3[256], instr4[256], nlength[256];
 	
 	for (i = 0; i <= (uniqueptns)-1; i++) {
 	
@@ -176,13 +176,11 @@ int main(int argc, char *argv[]){
 			ch2[0] = 0;
 			ch3[0] = 0;		//tone/slide
 			ch4[0] = 0;		//tone/noise
-			duty1[0] = 0x80;
-			duty2[0] = 0x80;
-			duty3[0] = 0x80;
-			duty4[0] = 0x80;
+			instr1[0] = 0;
+			instr2[0] = 0;
+			instr3[0] = 0;
+			instr4[0] = 0;
 			nlength[0] = 0xff;
-			insch3[0] = 0;
-			insch4[0] = 0;
 			
 			fileoffset = ptnoffsetlist[i] + 9;
 			
@@ -193,15 +191,10 @@ int main(int argc, char *argv[]){
 				ch3[rows] = ch3[rows-1];
 				ch4[rows] = ch4[rows-1];
 				
-				duty1[rows] = duty1[rows-1];
-				duty2[rows] = duty2[rows-1];
-				duty3[rows] = duty3[rows-1];
-				duty4[rows] = duty4[rows-1];
-				
-				insch3[rows] = insch3[rows-1];
-				insch4[rows] = insch4[rows-1];
-
-				mode = 0;
+				instr1[rows] = instr1[rows-1];
+				instr2[rows] = instr2[rows-1];
+				instr3[rows] = instr3[rows-1];
+				instr4[rows] = instr4[rows-1];
 				
 				nlength[rows] = 0xff;
 				
@@ -225,13 +218,22 @@ int main(int argc, char *argv[]){
 											
 								if (temp == 97) temp = 0;		//silence
 								
-								note = notetab[static_cast<int>(temp)];
-								if (m == 0) ch1[rows] = note;
-								if (m == 1) ch2[rows] = note;
-								if (m == 2) ch3[rows] = note;
+								//note = notetab[static_cast<int>(temp)];
+								if (m == 0) {
+									ch1[rows] = temp;
+									if (temp == 0) instr1[rows] = 0;
+								}
+								if (m == 1) {
+									ch2[rows] = temp;
+									if (temp == 0) instr2[rows] = 0;
+								}
+								if (m == 2) {
+									ch3[rows] = temp;
+									if (temp == 0) instr3[rows] = 0;
+								}
 								if (m == 3) {
-									ch4[rows] = note;
-									noteval = temp;
+									ch4[rows] = temp;
+									if (temp == 0) instr4[rows] = 0;
 								}
 								
 								fileoffset++;
@@ -241,45 +243,10 @@ int main(int argc, char *argv[]){
 							}
 							
 							if ((pp&2) == 2) {				//if bit 1 is set, it's instrument
-								if (temp == 1 || temp == 5 || temp == 9) {
-									if (m == 0) duty1[rows] = 0x80;
-									if (m == 1) duty2[rows] = 0x80;
-									if (m == 2) duty3[rows] = 0x80;
-									if (m == 3) duty4[rows] = 0x80;
-								}
-								if (temp == 2 || temp == 6 || temp == 10) {
-									if (m == 0) duty1[rows] = 0x40;
-									if (m == 1) duty2[rows] = 0x40;
-									if (m == 2) duty3[rows] = 0x40;
-									if (m == 3) duty4[rows] = 0x40;
-								}
-								if (temp == 3 || temp == 7) {
-									if (m == 0) duty1[rows] = 0x20;
-									if (m == 1) duty2[rows] = 0x20;
-									if (m == 2) duty3[rows] = 0x20;
-									if (m == 3) duty4[rows] = 0x20;
-								}
-								if (temp == 4 || temp == 8) {
-									if (m == 0) duty1[rows] = 0x10;
-									if (m == 1) duty2[rows] = 0x10;
-									if (m == 2) duty3[rows] = 0x10;
-									if (m == 3) duty4[rows] = 0x10;
-								}
-								
-								if (m == 2) {
-									if (temp < 9) insch3[rows] = 0;
-									if (temp >= 9) insch3[rows] = 1;
-									if (temp > 4 && temp < 9) cout << "WARNING: noise instrument used on wrong channel at ptn " << i << endl;
-								}
-								
-								if (m == 3) {
-									if (temp < 5 || temp > 8) insch4[rows] = 0;
-									if (temp >= 5 && temp <= 8) insch4[rows] = 1;
-									if (temp > 8) cout << "WARNING: slide instrument used on wrong channel at ptn " << i << endl;
-									cout << "ptn " << +i << " row " << +rows << " ch4instr " << +temp << " ch4mode " << +insch4[rows] << endl;	//debug
-								}
-								
-								if (m < 2 && temp > 4) cout << "WARNING: noise or slide instrument used on wrong channel at ptn " << i << endl;
+								if (m == 0 && ch1[rows] != 0) instr1[rows] = temp;
+								if (m == 1 && ch2[rows] != 0) instr2[rows] = temp;
+								if (m == 2 && ch3[rows] != 0) instr3[rows] = temp;
+								if (m == 3 && ch4[rows] != 0) instr4[rows] = temp;
 
 								fileoffset++;
 								INFILE.seekg(fileoffset, ios::beg);	//read next byte
@@ -303,22 +270,10 @@ int main(int argc, char *argv[]){
 								temp = static_cast<unsigned char>(temp);
 								
 								if ((cp&16) == 16 && (temp&0xf0) == 0x50) {	//if upper nibble = 5, it's detune
-									temp3 = 8 - (temp&15);			//ignore upper nibble
-									
-									switch(m) {				//setting detune if bit 4 is set
-										case 0: detune1 = static_cast<int>(ch1[rows]*temp3/100);
-											ch1[rows] = ch1[rows] - detune1;
-											break;
-										case 1: detune2 = static_cast<int>(ch2[rows]*temp3/100);
-											ch2[rows] = ch2[rows] - detune2;
-											break;
-										case 2: detune3 = static_cast<int>(ch3[rows]*temp3/100);
-											ch3[rows] = ch3[rows] - detune3;
-											break;
-										default: detune4 = static_cast<int>(ch4[rows]*temp3/100);
-											ch4[rows] = ch4[rows] - detune4;
-											
-									}
+									if (m == 0) detune1 = temp & 0xf;
+									if (m == 1) detune2 = temp & 0xf;
+									if (m == 2) detune3 = temp & 0xf;
+									if (m == 3) detune4 = temp & 0xf;
 								}
 								
 								if ((pp&16) == 16 && (temp&0xf0) == 0xc0) {	//if upper nibble = #c, it's note cut
@@ -335,17 +290,25 @@ int main(int argc, char *argv[]){
 						//read notes
 						temp = pp;
 						if (temp == 97) temp = 0;		//silence
-						//noteval = temp;
-							
-						note = notetab[static_cast<int>(temp)];
-						if (m == 0) ch1[rows] = note;
-						if (m == 1) ch2[rows] = note;
-						if (m == 2) ch3[rows] = note;
-						if (m == 3) {
-							ch4[rows] = note;
-							noteval = temp;
+						
+						if (m == 0) {
+							ch1[rows] = temp;
+							if (temp == 0) instr1[rows] = 0;
 						}
-							
+						if (m == 1) {
+							ch2[rows] = temp;
+							if (temp == 0) instr2[rows] = 0;
+						}
+						if (m == 2) {
+							ch3[rows] = temp;
+							if (temp == 0) instr3[rows] = 0;
+						}
+						if (m == 3) {
+							ch4[rows] = temp;
+							if (temp == 0) instr4[rows] = 0;
+						}
+						
+				
 						fileoffset++;
 						INFILE.seekg(fileoffset, ios::beg);	//read next byte
 						INFILE.read((&temp), 1);
@@ -353,45 +316,10 @@ int main(int argc, char *argv[]){
 						
 						
 						//read instruments
-						if (temp == 1 || temp == 5 || temp == 9) {
-							if (m == 0) duty1[rows] = 0x80;
-							if (m == 1) duty2[rows] = 0x80;
-							if (m == 2) duty3[rows] = 0x80;
-							if (m == 3) duty4[rows] = 0x80;
-						}
-						if (temp == 2 || temp == 6 || temp == 10) {
-							if (m == 0) duty1[rows] = 0x40;
-							if (m == 1) duty2[rows] = 0x40;
-							if (m == 2) duty3[rows] = 0x40;
-							if (m == 3) duty4[rows] = 0x40;
-						}
-						if (temp == 3 || temp == 7) {
-							if (m == 0) duty1[rows] = 0x20;
-							if (m == 1) duty2[rows] = 0x20;
-							if (m == 2) duty3[rows] = 0x20;
-							if (m == 3) duty4[rows] = 0x20;
-						}
-						if (temp == 4 || temp == 8) {
-							if (m == 0) duty1[rows] = 0x10;
-							if (m == 1) duty2[rows] = 0x10;
-							if (m == 2) duty3[rows] = 0x10;
-							if (m == 3) duty4[rows] = 0x10;
-						}
-						
-						if (m == 2) {
-							if (temp < 9) insch3[rows] = 0;
-							if (temp >= 9) insch3[rows] = 1;
-							if (temp > 4 && temp < 9) cout << "WARNING: noise instrument used on wrong channel at ptn " << i << endl;
-						}
-								
-						if (m == 3) {
-							if (temp < 5 || temp > 8) insch4[rows] = 0;
-							if (temp >= 5 && temp <= 8) insch4[rows] = 1;
-							if (temp > 8) cout << "WARNING: slide instrument used on wrong channel at ptn " << i << endl;
-						}
-								
-						if (m < 2 && temp > 4) cout << "WARNING: noise or slide instrument used on wrong channel at ptn " << i << endl;
-
+						if (m == 0 && ch1[rows] != 0) instr1[rows] = temp;
+						if (m == 1 && ch2[rows] != 0) instr2[rows] = temp;
+						if (m == 2 && ch3[rows] != 0) instr3[rows] = temp;
+						if (m == 3 && ch4[rows] != 0) instr4[rows] = temp;
 						
 						//read and ignore volume
 						fileoffset++;
@@ -415,22 +343,10 @@ int main(int argc, char *argv[]){
 						
 						//evaluate fx
 						if ((cp&16) == 16 && (temp&0xf0) == 0x50) {	//if upper nibble = 5, it's detune
-							temp3 = 8 - (temp&15);			//ignore upper nibble
-								
-							switch(m) {				//setting detune if bit 4 is set
-								case 0: detune1 = static_cast<int>(ch1[rows]*temp3/100);
-									ch1[rows] = ch1[rows] - detune1;
-									break;
-								case 1: detune2 = static_cast<int>(ch2[rows]*temp3/100);
-									ch2[rows] = ch2[rows] - detune2;
-									break;
-								case 2: detune3 = static_cast<int>(ch3[rows]*temp3/100);
-									ch3[rows] = ch3[rows] - detune3;
-									break;
-								default: detune4 = static_cast<int>(ch4[rows]*temp3/100);
-									ch4[rows] = ch4[rows] - detune4;
-									
-							}
+							if (m == 0) detune1 = temp & 0xf;
+							if (m == 1) detune2 = temp & 0xf;
+							if (m == 2) detune3 = temp & 0xf;
+							if (m == 3) detune4 = temp & 0xf;
 						}
 							
 						if ((pp&16) == 16 && (temp&0xf0) == 0xc0) {	//if upper nibble = #c, it's note cut
@@ -443,29 +359,50 @@ int main(int argc, char *argv[]){
 					}
 				}
 				
-				if (insch3[rows] == 1) mode = 4; 
-				if (insch4[rows] == 1 ) mode = 1;
-				if (insch3[rows] == 1 && insch4[rows] == 1 ) mode = 0x80;
-				if (mode == 1 && ch4[rows] == 0) mode = 0;
-				if (mode == 0x80 && ch4[rows] == 0) mode = 4;
+				duty12 = 0;
+				duty34 = 0;
+				mode = 0;
+				if (instr1[rows] > 4 || instr2[rows] > 4 || instr4[rows] > 8 || (instr3[rows] > 4 && instr3[rows] < 9) ) cout << "Wrong instrument used in pattern " << +i << " row " << +rows << endl;
+				if (instr1[rows] == 1) duty12 = 0x80 * 256;
+				if (instr1[rows] == 2) duty12 = 0x40 * 256;
+				if (instr1[rows] == 3) duty12 = 0x20 * 256;
+				if (instr1[rows] == 4) duty12 = 0x10 * 256;
+				if (instr2[rows] == 1) duty12 += 0x80;
+				if (instr2[rows] == 2) duty12 += 0x40;
+				if (instr2[rows] == 3) duty12 += 0x20;
+				if (instr2[rows] == 4) duty12 += 0x10;
+				if (instr3[rows] == 1 || instr3[rows] == 9) duty34 = 0x80 * 256;
+				if (instr3[rows] == 2 || instr3[rows] == 0xa) duty34 = 0x40 * 256;
+				if (instr3[rows] == 3) duty34 = 0x20 * 256;
+				if (instr3[rows] == 4) duty34 = 0x10 * 256;
+				if (instr4[rows] == 1 || instr4[rows] == 5) duty34 += 0x80;
+				if (instr4[rows] == 2 || instr4[rows] == 6) duty34 += 0x40;
+				if (instr4[rows] == 3 || instr4[rows] == 7) duty34 += 0x20;
+				if (instr4[rows] == 4 || instr4[rows] == 8) duty34 += 0x10;
 				
-				if ((mode == 1 || mode == 0x80) && ch4[rows] != 0) ch4[rows] = noisetab[noteval];
-//		
+				if (instr4[rows] > 4 && instr3[rows] > 8) mode = 0x80;
+				else if (instr4[rows] > 4) mode = 1;
+				else if (instr3[rows] > 8) mode = 4;
+				
+				note1 = notetab[ch1[rows]];
+				note2 = notetab[ch2[rows]];
+				note3 = notetab[ch3[rows]];
+				if (instr4[rows] < 5) note4 = notetab[ch4[rows]];
+				else note4 = noisetab[ch4[rows]+1];
+				note1 = note1 - (note1*(8-detune1)/100);
+				note2 = note2 - (note2*(8-detune2)/100);
+				note3 = note3 - (note3*(8-detune3)/100);
+				note4 = note4 - (note4*(8-detune4)/100);
+				
 				modlen = (nlength[rows]*256)+mode;
-				duty12 = duty1[rows]*256 + duty2[rows];
-				duty34 = duty3[rows]*256 + duty4[rows];
 		
 				OUTFILE << "\tdw #" << hex << modlen << ",#" << hex << duty12 << ",#" << hex << duty34;
-				OUTFILE << ",#" << hex << ch1[rows] << ",#" << hex << ch2[rows] << ",#" << hex << ch3[rows] << ",#" << hex << ch4[rows] << endl;
+				OUTFILE << ",#" << hex << +note1 << ",#" << +note2 << ",#" << +note3 << ",#" << +note4 << endl;
 		
-				ch1[rows] = ch1[rows] + detune1;
-				detune1 = 0;
-				ch2[rows] = ch2[rows] + detune2;
-				detune2 = 0;
-				ch3[rows] = ch3[rows] + detune3;
-				detune3 = 0;
-				ch4[rows] = ch4[rows] + detune4;
-				detune4 = 0;
+				detune1 = 8;
+				detune2 = 8;
+				detune3 = 8;
+				detune4 = 8;
 			}
 			
 		OUTFILE << "\tdb #40\n\n";
@@ -474,6 +411,8 @@ int main(int argc, char *argv[]){
 	
 	}
 
+
+	//if (isPatternUsed(3)) cout << "pattern 3 is used!\n";
 
 	if (debug >= 1) cout << "WARNING: " << debug << "out of range note(s) replaced with rests.\n";
 	cout << "Success!\n";
