@@ -1,5 +1,5 @@
 ********************************************************************************
-nanobeep by utz 09-10'2015
+nanobeep by utz 09'2015 - 04'2016
 2 channel beeper engine for ZX Spectrum
 ********************************************************************************
 
@@ -9,7 +9,7 @@ About
 
 nanobeep is a tiny beeper engine with minimalistic features. It features two
 channels of PFM-synthesized tone, with rather large pin pulses. In addition,
-there is a single interrupting click drum. The entire player is only 83 bytes. 
+there is a single interrupting click drum. The entire player is only 81 bytes. 
 
 
 Requirements

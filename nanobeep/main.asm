@@ -1,6 +1,6 @@
 ;******************************************************************
 ;nanobeep
-;83 byte beeper engine by utz 09-10'2015
+;81 byte beeper engine by utz 09'2015-04'2016
 ;******************************************************************
 ;
 ;ignores kempston
@@ -61,8 +61,10 @@ play
 	add a,e
 	ld d,a
 	
+	ld b,48
+	
 	sbc a,a
-	and #10
+	and b
 	out (#fe),a
 
 	in a,(#fe)		;read kbd
@@ -71,19 +73,19 @@ play
 	;cpl			;comment out the 2 lines above and uncomment this for full keyboard scan
 	;and #1f
 	;jr z,exit
-
-	ld b,49
+	
 	djnz $
 
 	ld a,c
 	add a,(hl)
 	ld c,a
+	
+	ld b,48
 
 	sbc a,a
-	and #10
+	and b
 	out (#fe),a
-
-	ld b,49
+	
 	djnz $
 
 	dec iy
