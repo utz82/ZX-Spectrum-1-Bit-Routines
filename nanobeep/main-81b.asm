@@ -1,6 +1,6 @@
 ;******************************************************************
 ;nanobeep
-;75 byte beeper engine by utz 09'2015-04'2016
+;81 byte beeper engine by utz 09'2015-04'2016
 ;******************************************************************
 ;
 ;ignores kempston
@@ -34,6 +34,7 @@ rdseq
 drum
 	ex de,hl
 	ld h,a
+	ld l,#fe
 	ld c,l
 	ld b,h
 	otir
@@ -60,18 +61,11 @@ play
 	add a,e
 	ld d,a
 	
-	sbc a,a
-	ld b,a
-
-	ld a,c
-	add a,(hl)
-	ld c,a
-
-	sbc a,a
-	or b
-	and #10
-	out (#fe),a
+	ld b,48
 	
+	sbc a,a
+	and b
+	out (#fe),a
 
 	in a,(#fe)		;read kbd
 	rra
@@ -80,7 +74,18 @@ play
 	;and #1f
 	;jr z,exit
 	
-	ld b,96
+	djnz $
+
+	ld a,c
+	add a,(hl)
+	ld c,a
+	
+	ld b,48
+
+	sbc a,a
+	and b
+	out (#fe),a
+	
 	djnz $
 
 	dec iy

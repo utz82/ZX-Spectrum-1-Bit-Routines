@@ -9,7 +9,7 @@ About
 
 nanobeep is a tiny beeper engine with minimalistic features. It features two
 channels of PFM-synthesized tone, with rather large pin pulses. In addition,
-there is a single interrupting click drum. The entire player is only 81 bytes. 
+there is a single interrupting click drum. The entire player is only 75 bytes.
 
 
 Requirements
@@ -56,6 +56,11 @@ in main.asm.
 When you're done with composing, simply run the provided compile.bat resp. 
 compile.sh scripts to convert your XM file into a ZX Spectrum .tap file. To
 convert only the XM file, run xm2nanobeep.pl.
+
+TIP: An older 81 byte version is included in the package as well. This doesn't 
+"drop" coincident pulses, meaning all notes will be produced properly even if
+their frequencies are multiples of each other. To use the 81 byte version,
+rename "main.asm" to something else, and rename "main-81b.asm" to "main.asm".
 
 
 
