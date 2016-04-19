@@ -1,6 +1,6 @@
 ;******************************************************************
-;nanobeep
-;77 byte beeper engine by utz 09'2015-04'2016
+;nanobeep light
+;73 byte beeper engine by utz 09'2015-04'2016
 ;******************************************************************
 ;
 ;ignores kempston
@@ -60,31 +60,26 @@ play
 	add a,e
 	ld d,a
 	
-	ld b,48
-	
 	sbc a,a
-	and b
-	out (#fe),a
-
-	djnz $
+	ld b,a
 
 	ld a,c
 	add a,(hl)
 	ld c,a
-	
-	ld b,48
 
 	sbc a,a
-	and b
+	or b
+	and #10
 	out (#fe),a
 	
+	ld b,97
 	djnz $
 
 	dec iy
 	ld a,iyh
 	or b
 	jr nz,play
-	
+
 	in a,(#fe)		;read kbd
 	rra
 	jr c,rdptn		;only space,a,q,1 will exit

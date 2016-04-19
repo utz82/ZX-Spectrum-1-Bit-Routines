@@ -3,144 +3,144 @@
 
 ;sequence
 loop
-	dw ptn0
-	dw ptn0
-	dw ptn1
-	dw ptn0
+	dw ptn0-1
+	dw ptn0-1
+	dw ptn1-1
+	dw ptn0-1
 	dw 0
 
 ;pattern data
 ptn0
-	db #fe,#10,#20
+	db #10,#20
 	db #10,#26
 	db #10,#30
 	db #10,#39
-	db #fe,#20,#40
+	db #20,#40
 	db #20,#4c
 	db #20,#60
 	db #20,#72
-	db #fe,#10,#20
+	db #10,#20
 	db #10,#26
 	db #10,#30
 	db #10,#39
-	db #fe,#20,#40
+	db #20,#40
 	db #20,#4c
 	db #20,#60
 	db #20,#72
-	db #fe,#10,#20
+	db #10,#20
 	db #10,#26
 	db #10,#30
 	db #10,#39
-	db #fe,#20,#40
+	db #20,#40
 	db #20,#4c
 	db #20,#60
 	db #20,#72
-	db #fe,#13,#20
+	db #13,#20
 	db #13,#26
 	db #13,#30
 	db #13,#39
-	db #fe,#26,#40
+	db #26,#40
 	db #26,#4c
 	db #26,#60
 	db #26,#72
-	db #fe,#10,#20
+	db #10,#20
 	db #10,#26
 	db #10,#30
 	db #10,#39
-	db #fe,#20,#40
+	db #20,#40
 	db #20,#4c
 	db #20,#60
 	db #20,#72
-	db #fe,#10,#20
+	db #10,#20
 	db #10,#26
 	db #10,#30
 	db #10,#39
-	db #fe,#20,#40
+	db #20,#40
 	db #20,#4c
 	db #20,#60
 	db #20,#72
-	db #fe,#10,#20
+	db #10,#20
 	db #10,#26
 	db #10,#30
 	db #10,#39
-	db #fe,#20,#40
+	db #20,#40
 	db #20,#4c
 	db #20,#60
 	db #20,#72
-	db #fe,#30,#20
+	db #30,#20
 	db #30,#26
 	db #30,#30
 	db #30,#39
-	db #fe,#26,#40
+	db #26,#40
 	db #26,#4c
-	db #fe,#26,#60
+	db #26,#60
 	db #26,#72
 	db #ff
 
 ptn1
-	db #fe,#15,#2b
+	db #15,#2b
 	db #15,#33
 	db #15,#40
 	db #15,#4c
-	db #fe,#2b,#55
+	db #2b,#55
 	db #2b,#66
 	db #2b,#80
 	db #2b,#98
-	db #fe,#15,#2b
+	db #15,#2b
 	db #15,#33
 	db #15,#40
 	db #15,#4c
-	db #fe,#2b,#55
+	db #2b,#55
 	db #2b,#66
 	db #2b,#80
 	db #2b,#98
-	db #fe,#15,#2b
+	db #15,#2b
 	db #15,#33
 	db #15,#40
 	db #15,#4c
-	db #fe,#2b,#55
+	db #2b,#55
 	db #2b,#66
 	db #2b,#80
 	db #2b,#98
-	db #fe,#19,#2b
+	db #19,#2b
 	db #19,#33
 	db #19,#40
 	db #19,#4c
-	db #fe,#33,#55
+	db #33,#55
 	db #33,#66
 	db #33,#80
 	db #33,#98
-	db #fe,#15,#2b
+	db #15,#2b
 	db #15,#33
 	db #15,#40
 	db #15,#4c
-	db #fe,#2b,#55
+	db #2b,#55
 	db #2b,#66
 	db #2b,#80
 	db #2b,#98
-	db #fe,#15,#2b
+	db #15,#2b
 	db #15,#33
 	db #15,#40
 	db #15,#4c
-	db #fe,#2b,#55
+	db #2b,#55
 	db #2b,#66
 	db #2b,#80
 	db #2b,#98
-	db #fe,#15,#2b
+	db #15,#2b
 	db #15,#33
 	db #15,#40
 	db #15,#4c
-	db #fe,#2b,#55
+	db #2b,#55
 	db #2b,#66
 	db #2b,#80
 	db #2b,#98
-	db #fe,#e,#2b
+	db #e,#2b
 	db #e,#33
 	db #e,#40
 	db #e,#4c
-	db #fe,#1d,#55
+	db #1d,#55
 	db #1d,#66
-	db #fe,#1d,#80
+	db #1d,#80
 	db #1d,#98
 	db #ff
 

@@ -127,7 +127,7 @@ for ($fileoffset = 80; $fileoffset < ($songlength+80); $fileoffset++) {
 	sysseek(INFILE, $fileoffset, 0) or die $!;
 	sysread(INFILE, $ptnval, 1) == 1 or die $!;
 	$ptnval = ord($ptnval);
-	print OUTFILE "\tdw ptn$ptnval\n";
+	print OUTFILE "\tdw ptn$ptnval-1\n";
 	#printf(OUTFILE "%x", $ptnval);		
 }
 print OUTFILE "\tdw 0\n\n",';pattern data',"\n";		
@@ -281,7 +281,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 			print OUTFILE "\tdb ",'#';
 			#printf(OUTFILE "%x", $ch1[$rows]);
 			#print OUTFILE ',#';
-			print OUTFILE 'fe,#' if ($drums[$rows] == 1);
+			print OUTFILE 'fe,#' if (($drums[$rows] == 1) && ($ARGV[0] ne '-u'));
 			printf(OUTFILE "%x", $ch2[$rows]);
 			print OUTFILE ',#';
 			printf(OUTFILE "%x", $ch3[$rows]);

@@ -1,6 +1,6 @@
 ;******************************************************************
-;nanobeep
-;81 byte beeper engine by utz 09'2015-04'2016
+;nanobeep ultra
+;56 byte beeper engine by utz 04'2016
 ;******************************************************************
 ;
 ;ignores kempston
@@ -25,20 +25,7 @@ rdseq
 	xor a
 	pop hl			;pattern pointer to HL
 	or h
-	jr nz,rdptn
-	;jr exit		;uncomment to disable looping
-	
-	ld sp,loop
-	jr rdseq
-
-drum
-	ex de,hl
-	ld h,a
-	ld l,#fe
-	ld c,l
-	ld b,h
-	otir
-	ex de,hl
+	jr z,exit
 
 ;******************************************************************	
 rdptn
@@ -47,9 +34,6 @@ rdptn
 	ld e,a
 	inc a			;if A=#ff
 	jr z,rdseq
-	
-	inc a
-	jr z,drum
 
 	inc hl			;point to base freq ch2	
 
@@ -61,39 +45,31 @@ play
 	add a,e
 	ld d,a
 	
-	ld b,48
-	
 	sbc a,a
-	and b
-	out (#fe),a
-
-	in a,(#fe)		;read kbd
-	rra
-	jr nc,exit		;only space,a,q,1 will exit
-	;cpl			;comment out the 2 lines above and uncomment this for full keyboard scan
-	;and #1f
-	;jr z,exit
-	
-	djnz $
+	ld b,a
 
 	ld a,c
 	add a,(hl)
 	ld c,a
-	
-	ld b,48
 
 	sbc a,a
-	and b
+	or b
 	out (#fe),a
 	
+	ld b,96
 	djnz $
 
 	dec iy
 	ld a,iyh
 	or b
 	jr nz,play
-	
-	jr rdptn
+
+	in a,(#fe)		;read kbd
+	rra
+	jr c,rdptn		;only space,a,q,1 will exit
+	;cpl			;comment out the 2 lines above and uncomment this for full keyboard scan
+	;and #1f
+	;jr nz,rdptn
 	
 ;******************************************************************			
 exit
