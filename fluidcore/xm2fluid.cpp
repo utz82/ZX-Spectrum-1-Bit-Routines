@@ -79,11 +79,21 @@ int main(int argc, char *argv[]){
 	//locate the pattern headers and read pattern lengths
 	unsigned ptnoffsetlist[256];
 	unsigned ptnlengths[256];
-	unsigned headlength, packedlength;
+	unsigned headlength, packedlength, xmhead;
 	unsigned char pp;
 	int i;
 	
-	ptnoffsetlist[0] = 336;
+	//determine XM header length
+	INFILE.seekg(61, ios::beg);
+	INFILE.read((&cp), 1);
+	pp = static_cast<unsigned char>(cp);
+	xmhead = pp*256;
+	INFILE.seekg(60, ios::beg);
+	INFILE.read((&cp), 1);
+	pp = static_cast<unsigned char>(cp);
+	xmhead+=pp;
+	
+	ptnoffsetlist[0] = xmhead+60;
 	fileoffset = ptnoffsetlist[0];
 	
 	for (i=0; i < uniqueptns; i++) {
