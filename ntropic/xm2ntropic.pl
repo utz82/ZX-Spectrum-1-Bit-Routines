@@ -36,7 +36,7 @@ open OUTFILE, ">$outfile" or die $!;
 print OUTFILE "\nptab\n";
 
 #setup variables
-my ($binpos, $fileoffset, $ptnoffset, $ix, $uniqueptns, $headlength, $packedlength, $plhibyte, $ptnlengthx, $ptnusage);
+my ($binpos, $fileoffset, $ptnoffset, $ix, $uniqueptns, $headlength, $packedlength, $plhibyte, $ptnlengthx, $ptnusage, $temp);
 use vars qw/$songlength/;
 my $detune2 = 0;
 my $detune3 = 0;
@@ -79,7 +79,16 @@ print "unique patterns:\t $uniqueptns \n" if ( $ARGV[0] eq '-v' );
 #locate the pattern headers within the .xm source file and check pattern lengths
 my (@ptnoffsetlist, @ptnlengths);
 
-$ptnoffsetlist[0] = 336;
+sysseek(INFILE, 60, 0) or die $!;
+sysread(INFILE, $headlength, 1) == 1 or die $!;
+$headlength = ord($headlength);
+sysseek(INFILE, 61, 0) or die $!;
+sysread(INFILE, $temp, 1) == 1 or die $!;
+$headlength += ord($temp)*256;
+
+$ptnoffsetlist[0] = $headlength + 60;
+
+#$ptnoffsetlist[0] = 336;
 $fileoffset = $ptnoffsetlist[0];
 
 for ($ix = 0; $ix < $uniqueptns; $ix++) {
