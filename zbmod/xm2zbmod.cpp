@@ -287,6 +287,10 @@ int main(int argc, char *argv[]){
 																
 								fileoffset++;
 							}
+							else {						//skip bytes for other fx
+								if ((pp&8) == 8) fileoffset++;
+								if ((pp&16) == 16) fileoffset++;
+							}
 						} 
 						
 					} else {			//uncompressed pattern data

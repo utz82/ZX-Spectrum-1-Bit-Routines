@@ -43,7 +43,7 @@ Any XM fed into xm2zbmod will be subject to these restrictions:
 
 - The XM must have exactly 4 channels.
 - Any data in the 4th channel is ignored.
-- The note range is limited from C#0 to C#4. Notes in the lowest octaves may be
+- The note range is limited from C#0 to C-4. Notes in the lowest octaves may be
   detuned.
 - All sample data must be 8-bit. (Milkytracker has a built-in command to convert
   samples to 8-bit via the "Optimize" menu.)
