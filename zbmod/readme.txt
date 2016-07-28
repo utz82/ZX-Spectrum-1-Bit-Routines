@@ -37,17 +37,23 @@ Composing Music
 ===============
 
 You can compose music for the zbmod player by converting ordinary 4-channel
-XMs with the included xm2zbmod utility.
+XMs with the included xm2zbmod utility. For reference, a demo XM has been
+included.
 
 Any XM fed into xm2zbmod will be subject to these restrictions:
 
 - The XM must have exactly 4 channels.
 - Any data in the 4th channel is ignored.
-- The note range is limited from C#0 to C-4. Notes in the lowest octaves may be
-  detuned.
-- All sample data must be 8-bit. (Milkytracker has a built-in command to convert
-  samples to 8-bit via the "Optimize" menu.)
+- The note range is limited. The exact range available changes depending on 
+  the type of sample used. Notes from C-1 to C-3 will generally be available, 
+  notes from C-0 - B-3 and/or C#3 - B#4 may or may not be available. The 
+  converter will report offending notes when encountered. Running xm2zbmod with
+  the -r flag will print the available note ranges of all samples currently in
+  use.
+- The relative note offset for all samples must be C-4 (+0) or higher.
+- Notes in the lowest octaves may be detuned.
 - Ping-pong and one-shot sample looping are not supported.
+- Multi-sample instruments are not supported.
 - The amount of samples you can use is restricted by the Spectrum's memory. A
   warning will be issued either by the converter or the assembler if the limit
   has been exceeded. Normally, you should get away with around 100 KB of sample
