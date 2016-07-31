@@ -1,0 +1,16 @@
+CC		= i686-w64-mingw32-g++-win32
+CXXFLAGS	= -Wall -O2 -s -std=c++11 -static -static-libstdc++
+#CXXFLAGS	= -Wall -pedantic -g -std=c++11
+DEPS		= xmkit.h
+OBJ		= xmkit.o xm2squeekerplus.o
+
+
+xm2squeekerplus.exe: $(OBJ)
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+%.o: %.cpp $(DEPS)
+	$(CC) -c $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+.PHONY: clean
+clean:
+	rm *o
