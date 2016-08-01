@@ -18,6 +18,7 @@ zmakebas.exe -a 10 -o loader.tap loader.bas
 xm2squeekerplus.exe
 if %ERRORLEVEL% equ 0 (
 	pasmo --equ origin=%addr% --alocal --tap main.asm main.tap
+	copy /b /y loader.tap+main.tap test.tap > nul
 	del main.tap
 )
 del loader.tap loader.bas
