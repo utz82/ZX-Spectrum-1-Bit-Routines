@@ -50,7 +50,8 @@ The following restrictions apply:
   below).
 - All other effects are ignored, except for the following:
   Bxx - set loop point
-  E5x - set detune (only effective for the current note)
+  E5x - set detune (only effective for the current note, ignored if set without
+        a note trigger)
   Fxx - set Speed (= number of ticks per row, xx <= $1f). It is reset to the 
         global value at the beginning of a new pattern.
 - Click drums should be used in channel 5/6. Only one click drum can be active
