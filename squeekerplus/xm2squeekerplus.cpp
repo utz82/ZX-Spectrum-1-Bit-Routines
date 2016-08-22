@@ -147,7 +147,7 @@ int main(int argc, char *argv[]){
 				if (!(ctrlA & 1)) {
 					
 					if (noise1) ASMFILE << "2175";
-					else ASMFILE << notetab[xm.ptnNotes[ptn][0][row]];
+					else ASMFILE << notetab[xm.ptnNotes[ptn][0][row]] + (xm.ptnDetune[ptn][0][row] - 8) * static_cast<int>(notetab[xm.ptnNotes[ptn][0][row]]/256);
 					
 					ASMFILE << ",env";
 					if (!xm.ptnNotes[ptn][0][row]) ASMFILE << "0";
@@ -160,7 +160,7 @@ int main(int argc, char *argv[]){
 				if (!(ctrlA & 4)) {
 					
 					if (noise2) ASMFILE << "2175";
-					else ASMFILE << notetab[xm.ptnNotes[ptn][1][row]];
+					else ASMFILE << notetab[xm.ptnNotes[ptn][1][row]] + (xm.ptnDetune[ptn][1][row] - 8) * static_cast<int>(notetab[xm.ptnNotes[ptn][1][row]]/256);
 					
 					ASMFILE << ",env";
 					if (!xm.ptnNotes[ptn][1][row]) ASMFILE << "0";
@@ -172,7 +172,7 @@ int main(int argc, char *argv[]){
 				
 				if (!(ctrlA & 0x80)) {
 				
-					ASMFILE << notetab[xm.ptnNotes[ptn][2][row]];
+					ASMFILE << notetab[xm.ptnNotes[ptn][2][row]] + (xm.ptnDetune[ptn][2][row] - 8) * static_cast<int>(notetab[xm.ptnNotes[ptn][2][row]]/256);
 					ASMFILE << ",env";
 					if (!xm.ptnNotes[ptn][2][row]) ASMFILE << "0";
 					else if (xm.ptnInstruments[ptn][2][row] && xm.instrVolEnvUsed[xm.ptnInstruments[ptn][2][row]]) ASMFILE << +xm.ptnInstruments[ptn][2][row];
@@ -184,7 +184,7 @@ int main(int argc, char *argv[]){
 				ASMFILE << +ctrlB;
 				
 				if (!(ctrlB & 0x40)) {
-					ASMFILE << ",#" << notetab[xm.ptnNotes[ptn][3][row]] << ",env";
+					ASMFILE << ",#" << notetab[xm.ptnNotes[ptn][3][row]] + (xm.ptnDetune[ptn][3][row] - 8) * static_cast<int>(notetab[xm.ptnNotes[ptn][3][row]]/256) << ",env";
 					if (!xm.ptnNotes[ptn][3][row]) ASMFILE << "0";
 					else if (xm.ptnInstruments[ptn][3][row] && xm.instrVolEnvUsed[xm.ptnInstruments[ptn][3][row]]) ASMFILE << +xm.ptnInstruments[ptn][3][row];
 					else if (xm.ptnVolumes[ptn][3][row] >= 0x10 && xm.ptnVolumes[ptn][3][row] <= 0x40) ASMFILE << "S_" << +xm.ptnVolumes[ptn][3][row] - 0x10;
