@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
 		for (int ch = 0; ch < 4; ch++) {
 			for (int row = 1; row <= xm.ptnLengths[ptn]; row++) {
 				if (xm.ptnVolumes[ptn][ch][row] >= 0x10 && xm.ptnVolumes[ptn][ch][row] <= 0x50) 
-				     isVolUsed[xm.ptnVolumes[ptn][ch][row] - 0x10] = true;
+				    isVolUsed[xm.ptnVolumes[ptn][ch][row] - 0x10] = true;
 			}
 		}
 	}
@@ -94,10 +94,10 @@ int main(int argc, char *argv[]){
 				bool noise2 = false;
 				
 				//TODO: fix volumes!
-				if (xm.ptnTriggers[ptn][0][row]) xm.ptnVolumes[ptn][0][row] = xm.ptnVolumes[ptn][0][row-1];
-				if (xm.ptnTriggers[ptn][1][row]) xm.ptnVolumes[ptn][1][row] = xm.ptnVolumes[ptn][1][row-1];
-				if (xm.ptnTriggers[ptn][2][row]) xm.ptnVolumes[ptn][2][row] = xm.ptnVolumes[ptn][2][row-1];
-				if (xm.ptnTriggers[ptn][3][row]) xm.ptnVolumes[ptn][3][row] = xm.ptnVolumes[ptn][3][row-1];
+				if (!xm.ptnTriggers[ptn][0][row]) xm.ptnVolumes[ptn][0][row] = xm.ptnVolumes[ptn][0][row-1];
+				if (!xm.ptnTriggers[ptn][1][row]) xm.ptnVolumes[ptn][1][row] = xm.ptnVolumes[ptn][1][row-1];
+				if (!xm.ptnTriggers[ptn][2][row]) xm.ptnVolumes[ptn][2][row] = xm.ptnVolumes[ptn][2][row-1];
+				if (!xm.ptnTriggers[ptn][3][row]) xm.ptnVolumes[ptn][3][row] = xm.ptnVolumes[ptn][3][row-1];
 				
 				if (xm.ptnInstruments[ptn][0][row] == xm.ptnInstruments[ptn][0][row-1] && xm.ptnNotes[ptn][0][row] == xm.ptnNotes[ptn][0][row-1]
 				     && (xm.ptnVolumes[ptn][0][row] == xm.ptnVolumes[ptn][0][row-1] || xm.instrVolEnvUsed[xm.ptnInstruments[ptn][0][row]]) && !xm.ptnTriggers[ptn][0][row])
