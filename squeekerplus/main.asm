@@ -257,10 +257,16 @@ eex
 	ld hl,(fch4)		;update ch4 pitch
 	srl d			;if pitch slide is enabled, de = freq.ch4
 	rr e			;else, de = 0
+	
+	ld a,d			;TEMP FIX added 16/08/24 to solve "low note on ch4" bug
+	or e			;
+	jr z,_skip		;
+	
 	sbc hl,de		;thus, freq.ch4 = freq.ch4 - int(freq.ch4/2)
 	ld (fch4),hl		;if pitch slide is enabled, else no change
- 	ld iy,0			;reset add counter ch4 so it isn't accidentally
-				;left in a "high" state
+ 	
+	ld iy,0			;reset add counter ch4 so it isn't accidentally
+_skip				;left in a "high" state
 	
 	exx
 	

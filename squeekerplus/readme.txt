@@ -163,7 +163,7 @@ bit 6 - skip freq/env reload for ch4
 bit 7 - trigger click drum 2 (hihat)
 
 10) freq ch4
-11) freq ch5
+11) env ch4
 
 Each entry is one word long. Entries 1, 2, and 9 are mandatory, the rest is
 optional, their presence depending on the control bytes. If control byte A is
