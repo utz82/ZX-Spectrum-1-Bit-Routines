@@ -260,7 +260,7 @@ eex
 	
 	ld a,d			;TEMP FIX added 16/08/24 to solve "low note on ch4" bug
 	or e			;
-	jr nz,_skip		;
+	jr z,_skip		;
 	
 	sbc hl,de		;thus, freq.ch4 = freq.ch4 - int(freq.ch4/2)
 	ld (fch4),hl		;if pitch slide is enabled, else no change
