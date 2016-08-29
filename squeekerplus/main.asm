@@ -115,10 +115,14 @@ ld4
 	jr z,ldx
 	pop hl
 	ld (fch4),hl		;freq 4
+	ld iy,0
 	ld de,0
+	ld a,slideskip-jrcalc-1
 	jr nc,nokick
+	ld a,d			;A=0
 	ex de,hl
 nokick
+	ld (jrcalc),a
 	pop hl
 	ld (envset4),hl
 	ld a,(hl)
@@ -254,19 +258,18 @@ envset4 equ $+1
 	ld (envset4),hl
 
 eex
+jrcalc equ $+1
+	jr slideskip		;
+
 	ld hl,(fch4)		;update ch4 pitch
 	srl d			;if pitch slide is enabled, de = freq.ch4
 	rr e			;else, de = 0
-	
-	ld a,d			;TEMP FIX added 16/08/24 to solve "low note on ch4" bug
-	or e			;
-	jr z,_skip		;
 	
 	sbc hl,de		;thus, freq.ch4 = freq.ch4 - int(freq.ch4/2)
 	ld (fch4),hl		;if pitch slide is enabled, else no change
  	
 	ld iy,0			;reset add counter ch4 so it isn't accidentally
-_skip				;left in a "high" state
+slideskip			;left in a "high" state
 	
 	exx
 	
