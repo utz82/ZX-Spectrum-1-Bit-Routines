@@ -101,7 +101,7 @@ If bit 2 is reset, two words specifying the SID/ES effect settings follow.
     ES effect takes an arbitrary 8-bit value as argument. 0 disables the effect.
     To enable the SID effect, add 0xce00.
     To disable the SID effect, add 0xc600.
-If bit 7 is set, a word specifying the phase offset of ch1 op1 follows.
+If bit 7 is reset, a word specifying the phase offset of ch1 op1 follows.
 
 Note that setting the duty to a value greater than 0x40 or activating the SID
 effect on both operators can overload the engine (ie ch2 may be drowned out).
