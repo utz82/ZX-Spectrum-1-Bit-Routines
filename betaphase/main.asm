@@ -2,6 +2,8 @@
 ;experimental pulse-interleaving synthesis without duty threshold comparison
 ;by utz 10'2016, based on an original concept by Shiru
 
+include "equates.h"
+
 
 	org #8000
 	
