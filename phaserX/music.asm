@@ -97,7 +97,7 @@ ptn3
 ptn4
 	dw #1000|kick,mix_and|fsid,		#0080,g2,	#00c0,#4010,g3,g2+8,#4000
 	dw #0800|kick,mix_and|fsid|noupd2,	#0080,rest
-	dw #0800|hhat,mix_and|fsid,		#0080,h2,	#00c0,#4010,b3,b2+8,#4000
+	dw #0800|hhat,mix_and|fsid,		#0080,b2,	#00c0,#4010,b3,b2+8,#4000
 	dw #0800,mix_and|fsid,			#0080,c3,	#00c0,#4010,c4,c3+8,#4000
 	dw #0800|hhat,mix_and|fsid,		#0080,d3,	#00c0,#4010,d4,d3+8,#4000
 	
