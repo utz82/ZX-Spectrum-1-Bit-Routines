@@ -42,7 +42,7 @@ mloop
 	
 	;speed+flags, (z = end, c = skip update ch1, pe = skip update ch2, m = skip update ch3)
 	;[prescale1A*256+flags, [phaseOffset1,] mixMethod1*256+preScale1B, freqDiv1,] (z = enable duty mod, c = reset phase)
-	;[mixMethod2*256+flags, [phaseOffset2,] preScale2B*256+preScale2A|flags, [dutySweepAdd*256,] freqDiv2,] (z = enable duty mod, c = reset phase)
+	;[mixMethod2*256+flags, [phaseOffset2, dutySweepAdd*256,] preScale2B*256+preScale2A, freqDiv2,] (z = enable duty mod, c = reset phase)
 	;[postScale3+slideAmount, slideDirectionFlag+freqDiv3 (bit 15)]
 	
 interlude1
@@ -70,7 +70,7 @@ interlude1a
 	dw endPtn	
 	
 ptn0
-	dw #800,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mXor, 0, 0, rest,	#20|scaleDown*256, a3
+	dw #800,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mXor|dutyModOn, 0, 0, 0, rest,	#20|scaleDown*256, a3
 	dw #800|noUpd1|noUpd2,												0, rest
 	dw #800,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mXor, 0, rest,			0, rest
 	dw #800|noUpd1|noUpd2,												0, rest
@@ -83,7 +83,7 @@ ptn0
 	dw endPtn
 	
 ptn1
-	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr|dutyModOn, #100, 0, scaleDown, c4,	#20|scaleDown*256, a3
 	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
 	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
 	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4

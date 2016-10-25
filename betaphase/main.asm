@@ -92,13 +92,14 @@ skipUpdate1			;***ch2***
 	ld ix,0
 
 _skipPhaseReset
-	ld a,0
-	jr nz,_setDutyMod2
+	;ld a,0
+	jr nz,_noDutyMod2
 	
 	pop af
 
-_setDutyMod2
+;_setDutyMod2
 	ld (dutyMod2),a
+_noDutyMod2
 
 	pop hl			;preScale2A/B
 	ld (preScale2A),hl
