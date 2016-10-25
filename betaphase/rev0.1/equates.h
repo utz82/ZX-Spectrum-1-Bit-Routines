@@ -8,21 +8,16 @@ noUpd3		equ #80
 phaseReset	equ #1
 dutyModOn	equ #40
 
-scaleDown	equ #0f		;rrca
-scaleUp		equ #07		;rlca
-dMod		equ #57		;ld d,a
+scaleDown	equ #0f00	;rrca
+scaleUp		equ #0700	;rlca
 
-mXor		equ #ac00		;xor (iy)h
-mAnd		equ #a400		;and (iy)h
-mOr		equ #b400		;or (iy)h
-mNone		equ #b700		;or a
+mXor		equ #ac		;xor (iy)h
+mAnd		equ #a4		;and (iy)h
+mOr		equ #b4		;or (iy)h
 
 slideUp		equ #8000
 
 rest		equ #0
-
-ckick		equ #4
-chat		equ #80
 
 
 a0	 equ #1c

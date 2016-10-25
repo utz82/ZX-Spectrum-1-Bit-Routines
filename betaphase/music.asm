@@ -1,205 +1,210 @@
 
-
-include "equates.h"	;note name equates, can be omitted
-
 	dw ptn0
+	dw ptn0
+	dw ptn0
+	dw ptn0
+mloop
+	dw ptn1
 	dw ptn1
 	dw ptn1
 	dw ptn2
-	dw ptn1a
-	dw ptn1a
-	dw ptn1a
 	dw ptn3
-mloop	
+	dw ptn3
+	dw ptn3
+	dw ptn2a
+	dw ptn2
+	dw ptn2
 	dw ptn4
-	dw ptn4a
-	dw ptn4b
-	dw ptn5
-	dw ptn4b
-	dw ptn4a
 	dw ptn4
-	dw ptn6
-	
+	dw ptn3
+	dw ptn3
+	dw ptn3
+	dw ptn3a
+	dw ptn1
+	dw ptn1
+	dw ptn1
+	dw ptn2
+	dw ptn3
+	dw ptn3
+	dw ptn3
+	dw ptn2a
+	dw ptn2
+	dw ptn2
 	dw ptn4
-	dw ptn4a
-	dw ptn4b
-	dw ptn5
-	dw ptn4b
-	dw ptn4a
 	dw ptn4
-	dw ptn6
-	
-	dw ptn7
-	dw ptn7a
-	dw ptn7b
-	dw ptn8
-	dw ptn7b
-	dw ptn7a
-	dw ptn7
-	dw ptn9
-	
-	dw ptn4
-	dw ptn4a
-	dw ptn4b
-	dw ptn5
-	dw ptn4b
-	dw ptn4a
-	dw ptn4
-	dw ptn6a
+	dw ptn3
+	dw ptn3
+	dw ptn3
+	dw ptn3a
+	dw interlude1
+	dw interlude1a
 	dw 0
 	
-	;speed+flags, (z = end, c = skip update ch1, pe = skip update ch2, m = skip update ch3
-	;[prescale1+flags, [phaseOffset1,] mixMethod1+postScale1, freqDiv1,] (z = enable duty mod, c = reset phase)
-	;[prescale2+flags, [phaseOffset2,] mixMethod2+postScale2, freqDiv2,] (c = reset phase)
-	;[postScale3+slideAmount, slideDirection+freqDiv3 (bit 15)]
+	;speed+flags, (z = end, c = skip update ch1, pe = skip update ch2, m = skip update ch3)
+	;[prescale1A*256+flags, [phaseOffset1,] mixMethod1*256+preScale1B, freqDiv1,] (z = enable duty mod, c = reset phase)
+	;[mixMethod2*256+flags, [phaseOffset2,] preScale2B*256+preScale2A|flags, [dutySweepAdd*256,] freqDiv2,] (z = enable duty mod, c = reset phase)
+	;[postScale3+slideAmount, slideDirectionFlag+freqDiv3 (bit 15)]
+	
+interlude1
+	dw #c000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, g3,	#2, c3
+	dw #4000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, dis3,	1, a0
+	dw #c000|noUpd3,	phaseReset, 0, mNone, rest,				phaseReset|dutyModOn|mOr, #100, #2000, 0, fis3
+	dw #2000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, dis3,	0, rest
+	dw #2000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, d3,	0, rest
+	dw #8000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, dis3,	0, rest
+	dw #8000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, c3,	0, rest
+	dw #8000,	phaseReset, 0, mNone, rest,					phaseReset|dutyModOn|mOr, #100, #2000, 0, fis3,	0, rest
+	dw #8000,	phaseReset, 0, mNone, rest,					dutyModOn|mOr, #2000, 0, fis3,			0, rest
+	dw endPtn
+	
+interlude1a
+	dw #c000,	phaseReset|dutyModOn|dMod*256, #100, mOr, c1,			phaseReset|dutyModOn|mOr, #100, #2000, 0, g3,	0, rest
+	dw #4000|noUpd1,								phaseReset|dutyModOn|mOr, #100, #2000, 0, dis3,	0, rest
+	dw #c000,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, fis1,	phaseReset|dutyModOn|mOr, #100, #2000, 0, fis3,	0, rest
+	dw #2000|noUpd1,								phaseReset|dutyModOn|mOr, #100, #2000, 0, dis3,	0, rest
+	dw #2000|noUpd1,								phaseReset|dutyModOn|mOr, #100, #2000, 0, d3,	0, rest
+	dw #8000,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|dutyModOn|mOr, #100, #2000, 0, dis3,	0, rest
+	dw #8000|noUpd1,								phaseReset|dutyModOn|mOr, #100, #2000, 0, c3,	0, rest
+	dw #8000,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, fis1,	phaseReset|dutyModOn|mOr, #100, #2000, 0, fis3,	0, rest
+	dw #8000|noUpd1,								dutyModOn|mOr, #2000, 0, fis3,			0, rest
+	dw endPtn	
 	
 ptn0
-	dw #c00,	phaseReset|dutyModOn, #100, mXor, c1,	phaseReset, 0, mXor, rest,			#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	dw #c00|noUpd2,	0, mXor, c2,										#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
+	dw #800,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mXor, 0, 0, rest,	#20|scaleDown*256, a3
+	dw #800|noUpd1|noUpd2,												0, rest
+	dw #800,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mXor, 0, rest,			0, rest
+	dw #800|noUpd1|noUpd2,												0, rest
+	
+	dw #400|noUpd2|noUpd3,	phaseReset|#cb*256, #100, #2|mNone, #235
+	dw #c00,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mXor, 0, 0, rest,	0, rest
+	dw #800,	dutyModOn|dMod*256, mXor, c2,					mXor, 0, rest,			#20|scaleDown*256, a3
+	dw #800|noUpd1|noUpd2,												0, rest
+
 	dw endPtn
+	
+ptn1
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
+	
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	mOr, scaleDown, g4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g4
 
-ptn1	
-	dw #c00|noUpd2,	0, mXor, c1,										#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	dw #c00|noUpd2,	0, mXor, c2,										#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	db endPtn
+	dw endPtn
 	
-ptn1a	
-	dw #c00|noUpd2,	0, scaleDown|mAnd, c2,									#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	dw #c00|noUpd2,	0, scaleDown|mAnd, c3,									#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	db endPtn
+ptn2
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
 	
-ptn2	
-	dw #c00|noUpd2,	0, mXor, c1,										#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	dw #c00|noUpd2,	0, mXor, dis2,										#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	db endPtn
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	mOr, scaleDown, dis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
 
-ptn3	
-	dw #c00|noUpd2,	scaleDown, scaleDown|mAnd, c2,								#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	dw #c00|noUpd2,	scaleDown, scaleDown|mAnd, ais2,							#18|scaleDown, a3
-	dw #c00|noUpd1|noUpd2,											0, rest
-	db endPtn
+	dw endPtn
 	
-ptn4	
-	dw #600,	scaleUp, scaleDown|mAnd, c2,	phaseReset, #100, mXor, c3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	dw #600,	scaleUp, scaleDown|mAnd, c3,	0, mXor, c3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	db endPtn
+ptn2a
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, dis4
+	
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	mOr, scaleDown, d4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, d4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, d4
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, c4,	0, rest
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c2,	mOr, scaleDown, d4
 
-ptn4a	
-	dw #600,	scaleUp, scaleDown|mAnd, c2,	phaseReset, #200, mXor, c3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	dw #600,	scaleUp, scaleDown|mAnd, c3,	0, mXor, c3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	db endPtn
+	dw endPtn
 	
-ptn4b	
-	dw #600,	scaleUp, scaleDown|mAnd, c2,	phaseReset, #400, mXor, c3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	dw #600,	scaleUp, scaleDown|mAnd, c3,	0, mXor, c3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	db endPtn
+ptn3
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
 	
-ptn5	
-	dw #600,	scaleUp, scaleDown|mAnd, c2,	phaseReset, #600, mXor, c3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	dw #600,	scaleUp, scaleDown|mAnd, dis3,	0, mXor, c3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	db endPtn
-	
-ptn6	
-	dw #600,	scaleUp, scaleDown|mAnd, c2,	phaseReset, #80, mXor, c3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	dw #600,	scaleUp, scaleDown|mAnd, ais2,	0, mXor, c3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, d3
-	dw #600|noUpd1,					0, mXor, dis3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, f3
-	db endPtn
-	
-ptn6a
-	dw #3000,	scaleUp, scaleDown|mAnd, rest,	phaseReset, #200, mXor, rest,				#2|scaleDown, c2|slideUp
-	db endPtn
-	
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	mOr, scaleDown, fis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
 
-ptn7	
-	dw #600,	scaleUp, scaleDown|mAnd, f2,	phaseReset, #100, mXor, f3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	dw #600,	scaleUp, scaleDown|mAnd, f3,	0, mXor, f3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	db endPtn
+	dw endPtn
 	
-ptn7a	
-	dw #600,	scaleUp, scaleDown|mAnd, f2,	phaseReset, #200, mXor, f3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	dw #600,	scaleUp, scaleDown|mAnd, f3,	0, mXor, f3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	db endPtn
+ptn3a
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
 	
-ptn7b	
-	dw #600,	scaleUp, scaleDown|mAnd, f2,	phaseReset, #400, mXor, f3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	dw #600,	scaleUp, scaleDown|mAnd, f3,	0, mXor, f3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	db endPtn
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, c4,	#20|scaleDown*256, a3
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	mOr, scaleDown, fis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, c4,			#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+	dw #400|noUpd1,									mOr, scaleDown, c4,			#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, fis4
+
+	dw endPtn
 	
-ptn8	
-	dw #600,	scaleUp, scaleDown|mAnd, f2,	phaseReset, #600, mXor, f3,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	dw #600,	scaleUp, scaleDown|mAnd, gis3,	0, mXor, f3,						#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				0, mXor, g3
-	dw #600|noUpd1,					0, mXor, gis3,						0, rest
-	dw #600|noUpd1|noUpd3,				0, mXor, ais3
-	db endPtn
+ptn4
+	dw #400,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	phaseReset|mOr, #100, scaleDown, g3,	#20|scaleDown*256, a3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1,									mOr, scaleDown, g3,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, g3,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
 	
-ptn9	
-	dw #600,	scaleUp, scaleDown|mAnd, f2,	scaleDown|phaseReset, #80, scaleUp|mXor, f4,		#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				scaleDown, scaleUp|mXor, g4
-	dw #600|noUpd1,					scaleDown, scaleUp|mXor, gis4,				0, rest
-	dw #600|noUpd1|noUpd3,				scaleDown, scaleUp|mXor, ais4
-	dw #600,	scaleUp, scaleDown|mAnd, dis3,	scaleDown, scaleUp|mXor, f4,				#18|scaleDown, a3
-	dw #600|noUpd1|noUpd3,				scaleDown, scaleUp|mXor, g4
-	dw #600|noUpd1,					scaleDown, scaleUp|mXor, gis4,				#18|scaleDown, a3
-	dw #600|noUpd1,					scaleDown, scaleUp|mXor, ais4,				#18|scaleDown, a3
-	db endPtn
+	dw #400,	phaseReset|#cb*256, #100, #2|mNone, #235,			phaseReset|mOr, #100, scaleDown, g3,	#20|scaleDown*256, a3
+	dw #400|noUpd3,	phaseReset|dutyModOn|dMod*256, #100, scaleDown|mXor, c1,	mOr, scaleDown, c4
+	dw #400|noUpd1,									mOr, scaleDown, g3,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400,	dutyModOn|dMod*256, scaleDown|mXor, c2,				mOr, scaleDown, g3,			0, rest
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, g3
+	dw #400|noUpd1|noUpd3,								mOr, scaleDown, c4
+
+	dw endPtn
 	

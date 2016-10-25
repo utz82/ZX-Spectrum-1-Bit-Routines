@@ -1,9 +1,9 @@
-;BetaPhase - ZX Spectrum beeper engine - r0.2
+;BetaPhase - ZX Spectrum beeper engine
 ;experimental pulse-interleaving synthesis without duty threshold comparison
 ;by utz 10'2016, based on an original concept by Shiru
 
+include "equates.h"
 
-include "equates.h"	;note name equates, can be omitted
 
 	org #8000
 	
@@ -51,28 +51,31 @@ ptnpntr equ $+1
 	
 	pop af			;
 	jr z,rdseq
-	
+
 	jr c,skipUpdate1	;***ch1***
 	ex af,af'
 
 	pop af
-	ld (preScale1A),a	;preScale1A|phase reset enable
+	ld (preScale1),a	;preScale1|phase reset enable
 	jr nc,_skipPhaseReset
 	
 	pop de			;pop phase offset
 	ld hl,0
 	
 _skipPhaseReset
-	ld a,#7a		;ld a,d
+	ld bc,#0900		;nop \ add hl,bc
 	jr nz,_setDutyMod
 	
-	ld a,#82		;add a,d
-_setDutyMod
-	ld (dutyMod),a
+	ld bc,#4aed		;adc hl,bc
 	
-
-	pop bc			;mixMethod + preScale1B
-	ld (preScale1B),bc
+_setDutyMod
+	ld (dutyMod1),bc
+				;duty mod on/off
+	pop bc			;mixMethod + postScale1
+	ld a,c
+	ld (mix1),a
+	ld a,b
+	ld (postScale1),a
 	
 	pop bc			;freq divider
 	
@@ -84,24 +87,16 @@ skipUpdate1			;***ch2***
 	ld (_restoreHL),hl
 	ex af,af'
 	
-	pop af			;mix2|phase reset enable
-	ld (mix2),a	
+	pop af			;preScale2|phase reset enable
+	ld (preScale2),a	
 	jr nc,_skipPhaseReset	;phase reset yes/no
 	
 	pop iy
 	ld ix,0
 
 _skipPhaseReset
-	ld a,0
-	jr nz,_setDutyMod2
-	
-	pop af
-
-_setDutyMod2
-	ld (dutyMod2),a
-
-	pop hl			;preScale2A/B
-	ld (preScale2A),hl
+	pop hl			;mix method|postScale2
+	ld (mix2),hl
 				
 	pop hl			;freq div
 	ld (noteDiv2),hl
@@ -150,38 +145,40 @@ noteDiv2 equ $+1
 playNote
 	exx			;4
 
-	add hl,bc		;11		;ch1 (phaser/sid/noise)
+	add hl,bc		;11		;ch1 (duty mod)
 	ex de,hl		;4
+dutyMod1
+	nop			;4
 	add hl,bc		;11		;switch add|adc	PROBLEM: adc is 2 bytes, 15t
-
-	sbc a,a			;4		;sync for duty modulation
-dutyMod	
-	ld a,d			;4		;ld a,d = #7a (disable), add a,d = #82 (enable)
-preScale1A
-	nop			;4		;switch rrca/rlca/... *2 | ld d,a = #57 (enable sweep) | rlc d = #cb(02) for noise
-preScale1B
-	nop			;4		;also for rlc h... osc 2 off = noise? rlc l & prescale? or move it down | #(cb)02 for noise
+	
+	ld a,d			;4
+preScale1
+	nop			;4		;switch rrca/rlca/... *2
 mix1
-	xor h			;4		;switch xor|or|and|or a
+	xor h			;4		;switch xor|or|and|nop
 	ret c			;5		;timing TODO: careful, this will fail if mix op doesn't reset carry
-
+postScale1
+	nop			;4		;also for rlc h... osc 2 off = noise? rlc l & prescale? or move it down 
+						
+	
 	out (#fe),a		;11___80 (ch3)
 	
 	ex de,hl		;4	
 	ld a,0			;7		;timing
 
 	
-	add ix,sp		;15		;ch2 (phaser/noise)					
-	add iy,sp		;15
+	add ix,sp		;15		;ch2 (duty mod)
+dutyMod2					
+	add iy,sp		;15		;switch add|adc
 	ld a,ixh		;8
 
-preScale2A
-	nop			;4
-preScale2B
+preScale2
 	nop			;4
 mix2 equ $+1
 	xor iyh			;8
-
+postScale2
+	nop			;4
+	
 	exx			;4
 	out (#fe),a		;11___80 (ch1)	
 
@@ -209,16 +206,7 @@ postScale3
 	dec e			;4
 	jp nz,playNote		;10
 				;224
-
-	ld a,ixl				;duty modulator ch2
-dutyMod2 equ $+1
-	add a,0
-	ld ixl,a
-	
-	ld a,ixh
-	adc a,0
-	ld ixh,a
-			
+				
 	dec d
 	jp nz,playNote
 	
