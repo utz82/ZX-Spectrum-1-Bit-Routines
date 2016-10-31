@@ -1,6 +1,7 @@
+rest	 equ 0
 a0	 equ #ec
 ais0	 equ #fa
-h0	 equ #109
+b0	 equ #109
 c1	 equ #118
 cis1	 equ #129
 d1	 equ #13b
@@ -12,7 +13,7 @@ g1	 equ #1a4
 gis1	 equ #1bd
 a1	 equ #1d8
 ais1	 equ #1f4
-h1	 equ #211
+b1	 equ #211
 c2	 equ #231
 cis2	 equ #252
 d2	 equ #275
@@ -24,7 +25,7 @@ g2	 equ #348
 gis2	 equ #37a
 a2	 equ #3af
 ais2	 equ #3e7
-h2	 equ #423
+b2	 equ #423
 c3	 equ #461
 cis3	 equ #4a4
 d3	 equ #4eb
@@ -36,7 +37,7 @@ g3	 equ #690
 gis3	 equ #6f4
 a3	 equ #75e
 ais3	 equ #7ce
-h3	 equ #845
+b3	 equ #845
 c4	 equ #8c3
 cis4	 equ #948
 d4	 equ #9d6
@@ -48,7 +49,7 @@ g4	 equ #d21
 gis4	 equ #de9
 a4	 equ #ebc
 ais4	 equ #f9d
-h4	 equ #108a
+b4	 equ #108a
 c5	 equ #1186
 cis5	 equ #1291
 d5	 equ #13ab
@@ -60,7 +61,7 @@ g5	 equ #1a41
 gis5	 equ #1bd1
 a5	 equ #1d79
 ais5	 equ #1f39
-h5	 equ #2114
+b5	 equ #2114
 c6	 equ #230c
 cis6	 equ #2521
 d6	 equ #2757
@@ -72,7 +73,7 @@ g6	 equ #3483
 gis6	 equ #37a2
 a6	 equ #3af1
 ais6	 equ #3e72
-h6	 equ #4229
+b6	 equ #4229
 c7	 equ #4618
 cis7	 equ #4a43
 d7	 equ #4ead
