@@ -1,6 +1,6 @@
 kick	equ #1
 hhat	equ #4
-fnoise	equ #80
+fnoise	equ #40
 ptnend	equ #40
 rest	equ 0
 
