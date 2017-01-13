@@ -15,7 +15,7 @@ drums with configurable parameters.
 Composing Music
 ===============
 
-Currently, no editor exists for povver, so any music must be hand-crafted as
+Currently, no editor exists for wtbeep, so any music must be hand-crafted as
 assembly data. See the following section on how to construct the necessary
 music.asm files.
 
