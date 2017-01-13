@@ -234,6 +234,7 @@ int main(int argc, char *argv[]){
 			for (long j = 0; j < xm.instrSmpLengths[i][0]; j += intDownSample[i]) {
 			
 				if (j % (intDownSample[i] * 32) == 0) SMPFILE << "\n\tdb ";
+				else SMPFILE << ",";
 				
 				unsigned long temph;
 
@@ -255,10 +256,10 @@ int main(int argc, char *argv[]){
 				SMPFILE << hex << "#" << temph;
 				binsize++;
 				
-				if ((j + intDownSample[i]) % (intDownSample[i] * 32) != 0) SMPFILE << ",";
+				//if ((j + intDownSample[i]) % (intDownSample[i] * 32) != 0) SMPFILE << ",";
 			}
 			
-			SMPFILE << "0\n\n";
+			SMPFILE << ",0\n\n";
 			binsize++;
 		}
 	}

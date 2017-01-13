@@ -1,6 +1,6 @@
 CC		= g++
-#CXXFLAGS	= -Wall -Os -s
-CXXFLAGS	= -Wall -g -std=c++11
+CXXFLAGS	= -Wall -O2 -s -std=c++11 -no-pie
+#CXXFLAGS	= -Wall -g -std=c++11 -no-pie
 DEPS		= xmkit.h
 OBJ		= xmkit.o xm2zbmod.o
 
