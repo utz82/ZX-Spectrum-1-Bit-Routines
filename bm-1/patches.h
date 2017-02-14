@@ -40,6 +40,14 @@ macro noise4
 	xor l
 endm
 
+macro pfm		;use on both channels for true pin pulse experience
+	sbc a,a		;use iyh instead of ixh when only using on ch2
+	or ixh
+	add a,a
+	ld ixh,a
+	ds 4
+endm
+
 macro noise_vol_ch1	;expects param1_7 = #0f (rrca)
 	cp ixh
 	sbc a,a

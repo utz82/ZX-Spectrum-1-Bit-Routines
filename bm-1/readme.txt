@@ -31,6 +31,7 @@ With patches, you can produce
 - fake chords
 - bytebeat-like glitches
 - SIDsound (duty sweep)
+- PFM (classic pin pulse sound)
 - noise
 
 
