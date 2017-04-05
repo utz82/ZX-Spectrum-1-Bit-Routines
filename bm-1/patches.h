@@ -68,7 +68,21 @@ macro noise_vol_ch2	;expects param2_7 = #0f (rrca)
 	nop
 endm
 
+macro supersquare_ch1
+	exx
+	add a,b
+	ds 4
+	sub b
+	exx
+	ds 2
+endm
 
+macro supersquare_ch2
+	add a,b
+	ds 5
+	sub b
+	ds 3
+endm
 
 macro organ_ch1		;expects param1_7 = #07 (rlca)
 	add a,ixh	;recommended: ixh = #01..#0f
