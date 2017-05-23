@@ -2,7 +2,6 @@
 ;experimental pulse-interleaving synthesis without duty threshold comparison
 ;by utz 10'2016, based on an original concept by Shiru
 
-
 	org #8000
 	
 	di	
@@ -99,12 +98,9 @@ skipUpdate1			;***ch2***
 	ld ix,0
 
 _skipPhaseReset
-	;ld a,0
 	jr nz,_noDutyMod2
 	
 	pop af
-
-;_setDutyMod2
 	ld (dutyMod2),a
 _noDutyMod2
 
@@ -113,6 +109,14 @@ _noDutyMod2
 				
 	pop hl			;freq div
 	ld (noteDiv2),hl
+	
+	ld a,h
+	or l
+	jr nz,_skipPhaseReset2
+	
+	ld iy,0
+	ld ix,0
+_skipPhaseReset2
 	
 	ex af,af'
 _restoreHL equ $+1
@@ -251,3 +255,4 @@ oldSP equ $+1
 ;*******************************************************************************
 musicData
 	include "music.asm"
+	
