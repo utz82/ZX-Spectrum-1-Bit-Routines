@@ -1,13 +1,10 @@
-;BetaPhase - ZX Spectrum beeper engine - r0.2
+;BetaPhase - ZX Spectrum beeper engine - r0.3
 ;experimental pulse-interleaving synthesis without duty threshold comparison
 ;by utz 10'2016, based on an original concept by Shiru
 
 
-include "equates.h"	;note name equates, can be omitted
-
 	org #8000
 	
-
 	di	
 	exx
 	push hl			;preserve HL' for return to BASIC
@@ -29,7 +26,6 @@ seqpntr equ $+1
 	jr nz,rdptn0
 	
 	;jp exit		;uncomment to disable looping
-	
 	ld sp,mloop		;get loop point
 	jr rdseq+3
 
@@ -75,6 +71,17 @@ _setDutyMod
 	ld (preScale1B),bc
 	
 	pop bc			;freq divider
+	
+	ld a,b			;NEW: auto-phase reset on rests
+	or c
+ 	jr nz,_skipPhaseReset2
+
+	ld d,a
+	ld e,a
+	ld h,a
+	ld l,a
+
+_skipPhaseReset2
 	
 	ex af,af'
 
