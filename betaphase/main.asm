@@ -1,9 +1,9 @@
-;BetaPhase - ZX Spectrum beeper engine - r0.3
+;BetaPhase - ZX Spectrum beeper engine - r0.4
 ;experimental pulse-interleaving synthesis without duty threshold comparison
-;by utz 10'2016, based on an original concept by Shiru
+;by utz 2016-2017, based on an original concept by Shiru
 
 	org #8000
-	
+
 	di	
 	exx
 	push hl			;preserve HL' for return to BASIC
@@ -71,14 +71,12 @@ _setDutyMod
 	
 	pop bc			;freq divider
 	
-	ld a,b			;NEW: auto-phase reset on rests
+	ld a,b			;disable output on rests
 	or c
  	jr nz,_skipPhaseReset2
 
-	ld d,a
-	ld e,a
-	ld h,a
-	ld l,a
+	ld a,#af		;#af = xor a
+	ld (mix1),a
 
 _skipPhaseReset2
 	
@@ -112,10 +110,10 @@ _noDutyMod2
 	
 	ld a,h
 	or l
-	jr nz,_skipPhaseReset2
+	jr nz,_skipPhaseReset2	;disable output on rests
 	
-	ld iy,0
-	ld ix,0
+	ld a,#af		;#af = xor a
+	ld (mix2),a
 _skipPhaseReset2
 	
 	ex af,af'
@@ -164,7 +162,7 @@ playNote
 
 	add hl,bc		;11		;ch1 (phaser/sid/noise)
 	ex de,hl		;4
-	add hl,bc		;11		;switch add|adc	PROBLEM: adc is 2 bytes, 15t
+	add hl,bc		;11
 
 	sbc a,a			;4		;sync for duty modulation
 dutyMod	
@@ -174,7 +172,7 @@ preScale1A
 preScale1B
 	nop			;4		;also for rlc h... osc 2 off = noise? rlc l & prescale? or move it down | #(cb)02 for noise
 mix1
-	xor h			;4		;switch xor|or|and|or a
+	xor h			;4		;switch xor|or|and|or a|xor a (disable output)
 	ret c			;5		;timing TODO: careful, this will fail if mix op doesn't reset carry
 
 	out (#fe),a		;11___80 (ch3)
@@ -255,4 +253,3 @@ oldSP equ $+1
 ;*******************************************************************************
 musicData
 	include "music.asm"
-	
