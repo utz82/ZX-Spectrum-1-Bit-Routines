@@ -119,6 +119,7 @@ note_only_ch2
 no_ch2_reload
 
 ;*******************************************************************************
+;TODO update release with new (correct) timing, update equates.h, update demo song
 sound_loop
 	exx			;4
 	
@@ -141,19 +142,19 @@ noise1
 	exx			;4
 	out (c),a		;12__32
 	
-	jp _ch2			;10
 _ch2	
 	add hl,de		;11	;ch2 accu
 	
 	ld a,h			;4
 	add a,b			;4	;apply modulator
 	or h			;4
+	ret c			;5	;timing
 	rlca			;4
 waveform2
 	sbc a,a			;4	;replace with rrca for saw wave
 	xor h			;4	;replace with nop for saw/square wave
 	rrca			;4
-	out (#fe),a		;11__64
+	out (#fe),a		;12__64
 	rrca			;4
 	out (c),a		;12__16
 noise2
@@ -163,7 +164,7 @@ noise2
 	out (c),a		;12__32
 	
 	jp nz,sound_loop	;10
-				;224
+				;216
 
 mod_enable2	
 	inc b				;replace this with nop to disable modulation
