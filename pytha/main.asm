@@ -82,8 +82,9 @@ set_noise1
 	
 	pop hl				;waveform
 	ld (waveform1),hl
-	ld hl,0
+	
 note_only_ch1
+	ld hl,0
 	pop de				;freq divider
 	
 	ex af,af'
@@ -112,8 +113,9 @@ set_noise2
 	
 	pop hl				;waveform
 	ld (waveform2),hl
-	ld hl,0
+	
 note_only_ch2
+	ld hl,0
 	pop de				;freq divider
 
 no_ch2_reload
