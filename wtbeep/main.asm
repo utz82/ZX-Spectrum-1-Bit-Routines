@@ -1,6 +1,7 @@
-;wtbeep 0.1
+;wtbeep 0.2
 ;experimental beeper engine for ZX Spectrum
 ;by utz 11'2016 * www.irrlichtproject.de
+;bugfixes by Shiru 01'2018
 
 
 	include "equates.h"
@@ -91,10 +92,11 @@ ptnpntr equ $+1
 	ld d,a
 	
 	ex af,af'
-	exx
+	
 _noUpd1
 	jp pe,_noUpd2
 	
+	exx
 	ex af,af'
 	
 	ld h,HIGH(mixAlgo)
@@ -126,8 +128,12 @@ _noUpd1
 	ld b,a	
 	
 	ex af,af'
+	exx
+	
 _noUpd2
 	jp m,_noUpd3
+	
+	exx
 	
 	pop de
 	ld a,d
@@ -158,10 +164,9 @@ _noUpd2
 	ld (algo3+4),a
 	
 	ld de,0
+	exx
 
 _noUpd3
-	exx
-	
 	pop af
 	jp po,_noSweepReset
 	
