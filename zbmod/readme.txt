@@ -1,6 +1,6 @@
 ********************************************************************************
 zbmod beeper routine for ZX Spectrum
-by utz 06'2016
+by utz 06'2016 - 07'2018
 ********************************************************************************
 
 
@@ -89,11 +89,7 @@ This will create a BASIC screen which reads "My Song by Great Musician".
 Alternatively, you can use interactive-compile.cmd/.sh to interactively set
 these parameters.
 
-HINT 1: If you get a lot of noise between rows, you can manually adjust the 
-nextFrame pointers in the sample data. These normally point to "core0". Increase
-the value after "core" until the noise is reduced. The maximum is "core21".
-
-HINT 2: It is usually a good idea to send your samples through a low-pass filter
+HINT: It is usually a good idea to send your samples through a low-pass filter
 with a cutoff of around 4400 Hz, because any frequency above this threshold will
 produce aliasing sounds in zbmod.
 
@@ -163,11 +159,6 @@ same as for channel 1.
 If bit 0 of the flag byte is cleared, data for channel 3 follows. This works 
 like with the other channels, but after the sample and frequency bytes you must
 add a data word pointing directly to the desired sample (not to the table).
-
-All pattern rows are terminated by a word-length pointer to next core to be 
-executed in the player. This sets the initial relative volume for this row. It 
-is often sufficient to set this to "core0" (ie. starting volume = 0), however 
-for cleaner sound you might want to point to another of zbmod's 22 cores.
 
 Note: On the first row of each pattern, you must set the data for all channels
 (ie. flag must be 0). Also, each pattern must be terminated with a stand-alone
