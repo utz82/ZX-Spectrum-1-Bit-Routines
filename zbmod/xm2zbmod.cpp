@@ -333,7 +333,8 @@ int main(int argc, char *argv[]) {
     int error = 0;
     if (verbose) cout << hex << "data size: 0x" << binsize << " bytes.\n";
     if (binsize + 0x99ab > 0xffc0) {
-        cout << "Error: Data is too large.\n";
+        cout << "Error: Maximum data size exceeded by "
+             << ((binsize + 0x99ab) - 0xffc0) << " bytes\n";
         error = -1;
     } else
         cout << "Succes!\n";
