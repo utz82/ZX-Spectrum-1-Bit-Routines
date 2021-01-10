@@ -17,3 +17,7 @@ High-quality noise generator with 3-bit volume and 8-bit pitch control.
 #### pwm
 
 8-bit PWM sample playback with 3-bit volume control.
+
+#### ud
+
+General-purpose drum synth with mixed, volume controllable noise and kick.
