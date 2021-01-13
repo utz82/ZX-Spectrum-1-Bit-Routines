@@ -1,7 +1,7 @@
 # ZX Spectrum 1-Bit Routines
 
 A collection of Z80 music routines for ZX Spectrum beeper and compatibles. An overview over the available routines can be found
-[here](http://irrlichtproject.de/code.php) (section Sound Routines/ZX Spectrum).
+[here](http://irrlichtproject.de/code) (section Sound Routines/ZX Spectrum).
 
 Pull requests are welcome, especially for ports to other platforms.
 
