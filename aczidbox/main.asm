@@ -14,6 +14,14 @@ ACZ_PWM equ 1
     org #8000
 
 acz_init
+    ei                          ; detect kempston joystick
+    halt
+    in a,(#1f)
+    inc a
+    jr nz,_skip
+    ld (mask_kempston),a
+_skip
+
     di
 
     exx
@@ -64,6 +72,20 @@ old_sp equ $+1
     ret
 
 read_ptn
+    ld a,d
+    ex af,af'
+    in a,(#1f)                  ; read joystick/keyboard
+mask_kempston equ $+1
+    and #1f
+    ld d,a
+    in a,(#fe)
+    cpl
+    or d
+    and #1f
+    jr nz,exit_player
+    ex af,af'
+    ld d,a
+
     ld (fdiv1_restore),sp
 ptn_ptr equ $+1
     ld sp,0
