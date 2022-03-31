@@ -1,16 +1,17 @@
-;wtbeep 0.2
-;experimental beeper engine for ZX Spectrum
-;by utz 11'2016 * www.irrlichtproject.de
-;bugfixes by Shiru 01'2018
+; wtbeep 0.3
+; experimental beeper engine for ZX Spectrum
+; by utz 11'2016 * www.irrlichtproject.de
+; bugfixes by Shiru 01'2018
+; updated 03'2022 - sound improvements, +2A/+3 compatibility, unbalanced channel volumes
 
 
 	include "equates.h"
 
 	org #8000
-	
+
 	di
 	exx
-	ld c,0			;timer lo
+	ld b,0			;timer lo
 	push hl			;preserve HL' for return to BASIC
 	ld (oldSP),sp
 	ld hl,musicData
@@ -27,7 +28,7 @@ seqpntr equ $+1
 	or d
 	ld (seqpntr),sp
 	jr nz,rdptn0
-	
+
 	ld sp,mLoop		;get loop point		;comment out to disable looping
 	jr rdseq+3					;comment out to disable looping
 
@@ -52,24 +53,24 @@ readPtn
 
 
 ptnpntr equ $+1
-	ld sp,0	
-	
+	ld sp,0
+
 	pop af			;timer + ctrl
 	jr z,rdseq
-	
-	ld b,a			;timer (# ticks)
-	
+
+	ld c,a			;timer (# ticks)
+
 	jr c,_noUpd1
-	
+
 	ex af,af'
-	
+
 	ld h,HIGH(mixAlgo)
 	pop de
 	ld a,d
-	
+
 	and #f8
 	ld l,a
-	
+
 	ld a,(hl)
 	ld (algo1),a
 	inc l
@@ -84,28 +85,28 @@ ptnpntr equ $+1
 	inc l
 	ld a,(hl)
 	ld (algo1+4),a
-	
+
 	ld hl,0
-	
+
 	ld a,d
 	and #7
 	ld d,a
-	
+
 	ex af,af'
-	
+
 _noUpd1
 	jp pe,_noUpd2
-	
+
 	exx
 	ex af,af'
-	
+
 	ld h,HIGH(mixAlgo)
 	pop bc
 	ld a,b
-	
+
 	and #f8
 	ld l,a
-	
+
 	ld a,(hl)
 	ld (algo2),a
 	inc l
@@ -120,21 +121,21 @@ _noUpd1
 	inc l
 	ld a,(hl)
 	ld (algo2+4),a
-	
+
 	ld hl,0
-	
+
 	ld a,b
 	and #7
-	ld b,a	
-	
+	ld b,a
+
 	ex af,af'
 	exx
-	
+
 _noUpd2
 	jp m,_noUpd3
-	
+
 	exx
-	
+
 	pop de
 	ld a,d
 	ex af,af'
@@ -142,12 +143,12 @@ _noUpd2
 	and #7
 	ld d,a
 	ld (fdiv3),de
-	
+
 	ex af,af'
 	and #f8
 	ld e,a
 	ld d,HIGH(mixAlgo)
-	
+
 	ld a,(de)
 	ld (algo3),a
 	inc e
@@ -162,70 +163,77 @@ _noUpd2
 	inc e
 	ld a,(de)
 	ld (algo3+4),a
-	
+
 	ld de,0
 	exx
 
 _noUpd3
 	pop af
 	jp po,_noSweepReset
-	
+
 	ld iy,0					;reset sweep registers
 	ld ixh,0
 _noSweepReset
 	jr c,drum1
 	jr z,drum2
 	dec sp
-drumRet	
-	
+drumRet
+
 	ld (ptnpntr),sp
-	
+
 fdiv3 equ $+1
 	ld sp,0
 
+        ld a,c
+        ld c,#10
+playNote0
+        ex af,af'
+        xor a
 ;*******************************************************************************
 playNote
-	add hl,de	;11	
-	ld a,h		;4
+	add hl,de               ;11
+	out (#fe),a             ;11___72??
 
-algo1	
-	ds 5		;20
+	ld a,h                  ; 4
 
-	out (#fe),a	;11___64
-	
-	exx		;4
-	
-	add hl,bc	;11
-	ld a,h		;4
+algo1
+	ds 5                    ;20
 
-algo2	
-	ds 5		;20
-	
-	inc bc		;6		;timing
-	out (#fe),a	;11___56
-	
-	ex de,hl	;4
-	
-	add hl,sp	;11
-	ld a,h		;4
+        and c                   ; 4
+        ret c                   ; 5
+        nop                     ; 4
+	out (#fe),a             ;11___48
 
-algo3	
-	ds 5		;20
-	
-	dec bc		;6		;timing
-	nop		;4
-	
-	ex de,hl	;4
-	
-	out (#fe),a	;11___64
-	
-	
-	exx		;4
-	
-	dec c		;4
-	jp nz,playNote	;10
-			;184
-	
+	exx                     ; 4
+
+	add hl,bc               ;11
+	ld a,h                  ; 4
+
+algo2
+	ds 5                    ;20
+
+        and #10                 ; 7
+
+	ex de,hl                ; 4
+
+	add hl,sp               ;11
+
+	out (#fe),a             ;11___72
+
+	ld a,h                  ; 4
+
+algo3
+	ds 5                    ;20
+
+	ex de,hl                ; 4
+        exx                     ; 4
+
+        and c                   ; 4
+
+        dec b                   ; 4
+        jp nz,playNote          ;10
+			        ;192
+
 	inc iyl				;update sweep counters
 	ld a,iyl
 	rrca
@@ -233,30 +241,31 @@ algo3
 	ld iyh,a
 	rrca
 	ld ixh,a
-	
-	dec b
-	jp nz,playNote
+
+	ex af,af'
+        dec a
+	jp nz,playNote0
 
 	jp readPtn
-	
+
 ;*******************************************************************************
 drum2						;noise
 	ld (hlRest),hl
 	ld (bcRest),bc
-	
+
 	ld b,a
 	ex af,af'
-	
+
 	ld a,b
 	ld hl,1					;#1 (snare) <- 1011 -> #1237 (hat)
 	rrca
 	jr c,setVol
 	ld hl,#1237
 
-setVol	
+setVol
 	and #7f
-	ld (dvol),a	
-				
+	ld (dvol),a
+
 	ld bc,#a803				;length
 sloop
 	add hl,hl		;11
@@ -264,11 +273,12 @@ sloop
 	xor l			;4
 	ld l,a			;4
 
-dvol equ $+1	
+dvol equ $+1
 	cp #80			;7		;volume
 	sbc a,a			;4
-				
-	or #7			;7		;border
+
+	;; or #7			;7		;border
+        and #f8
 	out (#fe),a		;11
 	djnz sloop		;13/8
 
@@ -276,7 +286,7 @@ dvol equ $+1
 	jr nz,sloop		;12
 
 	jr drumEnd
-	
+
 drum1						;kick
 	ld (deRest),de
 	ld (bcRest),bc
@@ -286,14 +296,14 @@ drum1						;kick
 	ld e,0					;B = 0
 	ld h,e
 	ld l,e
-	
+
 	ex af,af'
-	
+
 	srl d					;set start pitch
 	rl e
-	
+
 	ld c,#3					;length
-	
+
 xlllp
 	add hl,de
 	jr c,_noUpd
@@ -305,14 +315,15 @@ _slideSpeed equ $+1
 	add a,d
 	ld d,a
 _noUpd
-	ld a,h					
-	or #7					;border
+	ld a,h
+	;; or #7					;border
+        and #f8
 	out (#fe),a
 	djnz xlllp
 	dec c
 	jr nz,xlllp
 
-						;45680 (/224 = 248.3)
+						;45680 (/192 = 237)
 deRest equ $+1
 	ld de,0
 
@@ -322,8 +333,8 @@ hlRest equ $+1
 	ld hl,0
 bcRest equ $+1
 	ld bc,0
-	
-	ld c,6					;adjust timer
+
+	ld b,18					;adjust timer
 	jp drumRet
 
 ;*******************************************************************************
@@ -334,26 +345,26 @@ ENDIF
 mixAlgo
 
 	ds 8			;00	50% square
-	
+
 	daa			;02	32% square
 	and h
 	ds 6
-	
+
 	rlca			;01	25% square
 	and h
 	ds 6
-	
+
 	daa			;03	19% square
 	cpl
 	and h
 	ds 5
-	
+
 	inc a			;04	12.5% square
 	inc a
 	xor h
 	rrca
 	ds 4
-	
+
 	inc a			;05	6.25% square
 	xor h
 	rrca
@@ -364,13 +375,13 @@ mixAlgo
 	dec a
 	or h
 	ds 3
-	
+
 	add a,iyh		;07	duty sweep (slow)
 	cpl
 	dec a
 	or h
 	ds 3
-	
+
 	add a,ixh		;08	duty sweep (very slow, start lo)
 	cpl
 	dec a
@@ -380,7 +391,7 @@ mixAlgo
 	add a,ixh		;09	duty sweep (very slow, start hi)
 	and h
 	ds 5
-	
+
 
 	add a,iyh		;0a	duty sweep (slow) + oct
 	rlca
@@ -391,7 +402,7 @@ mixAlgo
 	rrca
 	xor h
 	ds 4
-	
+
 	add a,iyl		;0c	duty sweep (fast) - oct
 	rrca
 	xor h
@@ -402,14 +413,14 @@ mixAlgo
 	cpl
 	xor h
 	ds 4
-	
+
 	daa			;0e	vowel 2
 	rlca
 	rlca
 	cpl
 	xor h
 	ds 3
-	
+
 	daa			;0f	vowel 3
 	cpl
 	xor h
@@ -421,26 +432,26 @@ mixAlgo
 	and h
 	rlca
 	ds 3
-	
+
 	rlca			;11	vowel 5
 	rlca
 	xor h
 	rlca
 	ds 4
-	
+
 	rrca			;12	vowel 6
 	sbc a,a
 	and h
 	rlca
 	ds 4
-	
+
 	cpl			;13	rasp 1
 	daa
 	sbc a,a
 	rlca
 	and h
 	ds 3
-	
+
 	rlca			;14	rasp 2
 	rlca
 	sbc a,a
@@ -460,7 +471,7 @@ mixAlgo
 	cpl
 	and h
 	ds 3
-	
+
 	daa			;17	phat 3
 	rlca
 	rlca
@@ -473,40 +484,40 @@ mixAlgo
 	cpl
 	and h
 	ds 4
-	
+
 	daa			;19	phat 5
 	rrca
 	rrca
 	cpl
 	xor h
 	ds 3
-	
+
 	cpl			;1a	phat 6
 	daa
 	sbc a,a
 	rlca
 	xor h
 	ds 3
-	
+
 	rlca			;1b	phat 7
 	rlca
 	sbc a,a
 	and h
 	rlca
 	ds 3
-	
+
 	rlc h			;1c	noise 1
 	and h
 	ds 5
-	
+
 	rlc h			;1e	noise 2
 	sbc a,a
 	or h
 	ds 4
-	
+
 	rlc h			;1d	noise 3
 	ds 6
-	
+
 	rlc h			;1f	noise 4
 	or h
 	xor l

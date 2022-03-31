@@ -1,6 +1,6 @@
 ********************************************************************************
-wtbeep v0.1 - 3 channel beeper engine
-by utz 11'2016 * www.irrlichtproject.de
+wtbeep v0.3 - 3 channel beeper engine
+by utz 11'2016,03'2022 * www.irrlichtproject.de
 ********************************************************************************
 
 
@@ -9,15 +9,17 @@ About
 
 wtbeep is an experimental 3-channel beeper engine for the ZX Spectrum. It offers
 a set of 32 different "waveforms" to chose from. Also included are two click
-drums with configurable parameters.
+drums with configurable parameters. Channel volumes are unbalanced, with channel
+3 being slightly quieter than channel 1 and 2.
 
 
 Composing Music
 ===============
 
-Currently, no editor exists for wtbeep, so any music must be hand-crafted as
-assembly data. See the following section on how to construct the necessary
-music.asm files.
+The engine is available in 1tracker (shiru.untergrund.net/software.shtml).
+
+See the following section on how to construct the necessary music.asm files
+manually.
 
 
 Waveforms
@@ -70,8 +72,8 @@ Music data for wtbeep follows the usual sequence-pattern approach.
 
 The sequence contains one or more pointers to patterns, in the order in which
 they are to be played. A label named "mLoop" must be present in the sequence to
-determine the position the player will loop to after it has completed the 
-sequence. (To disable looping, uncomment lines 30-31 in main.asm.) The sequence 
+determine the position the player will loop to after it has completed the
+sequence. (To disable looping, uncomment lines 30-31 in main.asm.) The sequence
 must be terminated with a 0-byte. The shortest legal sequence is thus:
 
 mLoop
@@ -79,7 +81,7 @@ mLoop
    dw 0
 
 
-Patterns contain the actual musical score. wtbeep uses a rather compact scheme 
+Patterns contain the actual musical score. wtbeep uses a rather compact scheme
 to encode pattern data.
 
 
@@ -95,7 +97,7 @@ word  bit     function
 1     *       freq_div1|waveform1 (omitted when word 0, bit 0 set)
       0..10   frequency divider ch1
       11..15  waveform ch1
-      
+
 2     *       as above, but for ch2 (omitted when word 0, bit 2 set)
 
 3     *       as above, but for ch3 (omitted when word 0, bit 3 set)
