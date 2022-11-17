@@ -102,4 +102,4 @@ _disable_drum
     dec e
     jp nz,_wait_for_drum_end+1
 
-    jp DRUM_RETURN_ADDRESS
+    jr _drum_exit
