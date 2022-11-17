@@ -3,7 +3,7 @@
 ;;;
 ;;; USAGE: 1) Define DRUM_RETURN_ADDRESS
 ;;;        2) Put pointer to drum instrument definition on top of stack
-;;;        3) JP kick_drum_init
+;;;        3) JP ud_init
 ;;;
 ;;; DRUM INSTRUMENT DEFINITION
 ;;;
