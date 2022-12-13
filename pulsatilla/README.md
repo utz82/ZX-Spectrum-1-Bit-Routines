@@ -67,7 +67,7 @@ The full data structure is as follows:
 |        | 6      | set pulse width ch4                                            |
 |        | 7      | enable PWM sweep                                               |
 | 23     |        | pulse width ch4                                                |
-| 24     |        | frequency divider ch5                                          |
+| 24     |        | frequency divider ch4                                          |
 | 26     |        | phase ch4                                                      |
 
 Any unused data can be omitted. For example, to only set a new note for channel 1, the step should look like this:
