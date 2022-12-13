@@ -240,8 +240,8 @@ pwm_init
 .play_drum0
     nop                         ; 4
 .play_drum
-    ds 2
-    out (#fe),a                 ; 11__32
+    ds 2                        ; 8
+    out (#fe),a                 ; 11__40
 
     rlca                        ; 4
     rlca                        ; 4
@@ -254,23 +254,21 @@ pwm_init
     ld d,(hl)                   ; 7
     ld d,(hl)                   ; 7     timing
     ld d,(hl)                   ; 7     timing
+    ds 2                        ; 8 (49)
 
 .wait_ret
-    jr 1F
-1
-    jp 1F
-1
-    out (#fe),a                 ; 11__64
+    ds 3                        ;12
+    out (c),a                   ;11__86
 
     rrca                        ; 4
-    nop
-    out (c),a                   ; 12__16
+    nop                         ; 4
+    out (c),a                   ;12__20
     rrca                        ; 4
 
-    djnz .play_drum0            ; 13 --- 112     update length counter lo-byte
+    djnz .play_drum0            ;13 --- 146     update length counter lo-byte
 
     dec e                       ; 4
-    jp nz,.play_drum            ; 10
+    jp nz,.play_drum            ;10
 
 
 .drum_exit
@@ -287,11 +285,11 @@ pwm_init
 
 
 .wait                           ;+12
+    ret z                       ; 5     timing
     inc d                       ; 4     check for sample end
     jr z,.disable_drum          ; 12
     dec d                       ; 4
-    ds 2                        ; 8
-    jr .wait_ret                ; 12 -- 52
+    jr .wait_ret                ; 12 -- 49
 
 
 .wait_for_drum_end
@@ -300,11 +298,14 @@ pwm_init
     ex (sp),hl                  ; 19
     ex (sp),hl                  ; 19
     ex (sp),hl                  ; 19
+    ld a,0                      ; 7
+    ld a,0                      ; 7
+    ds 5                        ; 20
 
 .disable_drum
     xor a                       ; 4
     out (#fe),a                 ; 11
-    djnz .wait_for_drum_end     ; 13
+    djnz .wait_for_drum_end     ; 13_146
 
     dec e
     jp nz,.wait_for_drum_end+1
