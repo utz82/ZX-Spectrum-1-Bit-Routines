@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
   speed = static_cast<unsigned char>(cp);
   if (arg == "-v")
     cout << "global tempo:    " << +cp << endl;
-  // OUTFILE << "\n\tdb #" << hex << +cp << "\t\t;speed" << endl;	//write it
-  // to music.asm as hex
+  // OUTFILE << "\n\tdb #" << hex << +cp << "\t\t;speed" << endl;	//write
+  // it to music.asm as hex
 
   // locate the pattern headers and read pattern lengths
   unsigned ptnoffsetlist[256];
@@ -172,7 +172,8 @@ int main(int argc, char *argv[]) {
   int ch1[257], ch2[257], ch3[257], ch4[257]; // was unsigned
   unsigned char instr1[257], instr2[257], instr3[257], instr4[257], rspeed[257],
       instruments[257];
-  instruments[0] = 0;
+  for (i = 0; i < 257; ++i)
+    instruments[i] = 0;
 
   for (i = 0; i <= (uniqueptns)-1; i++) {
 
@@ -438,7 +439,7 @@ int main(int argc, char *argv[]) {
         insused = false;
         for (x = 0; x < 256; x++) {
           if (instr4[rows] == instruments[x])
-            insused = true;
+	    insused = true;
         }
         if (insused == false) {
           insamnt++;
@@ -454,8 +455,6 @@ int main(int argc, char *argv[]) {
       OUTFILE << "\tdb #40\n\n";
     }
   }
-
-  cout << +insamnt << "samples used" << endl;
 
   OUTFILE << hex << "loop equ sequence+#" << +looppoint << endl;
 
