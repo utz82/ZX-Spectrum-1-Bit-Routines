@@ -16,7 +16,6 @@ IF Z80=CMOS			;values for CMOS Z80
 	seta equ #79		;ld c,a
 ENDIF
 
-	;org #8065
 	org origin	;org address is defined externally by compile script
 
 init
@@ -26,7 +25,7 @@ init
 	inc a
 	jr nz,_skip
 	ld (maskKempston),a
-_skip	
+_skip
 	di
 	exx
 	push hl			;preserve HL' for return to BASIC
@@ -44,12 +43,12 @@ seqpntr equ $+1
 	or d
 	ld (seqpntr),sp
 	jr nz,rdptn0
-	
+
 	;jp exit		;uncomment to disable looping
-	
+
 	ld sp,loop		;get loop point - comment out when disabling looping
 	jr rdseq+3
-	
+
 exit
 oldSP equ $+1
 	ld sp,0
@@ -69,7 +68,7 @@ updateTimerND
 	ld a,#ff
 	ex af,af'
 	jp (ix)
-	
+
 updateTimerOD
 	ld a,i
 	dec a
@@ -81,7 +80,8 @@ updateTimerOD
 
 ;************************************************************************************************
 rdptn0
-	ld (patpntr),de	
+	ld (patpntr),de
+        ld de,0
 rdptn
 	in a,(#1f)		;read joystick
 maskKempston equ $+1
@@ -97,58 +97,76 @@ patpntr equ $+1			;fetch pointer to pattern data
 	ld sp,0
 
 	pop af
+        or a
 	jr z,rdseq
-	
-	ld i,a
-	
-	pop hl			;10	;freq.ch1
-	ld (buffer),hl		;16
-	pop hl			;10	;freq.ch2
-	ld (buffer+4),hl	;16
-	pop de			;10	;sample.ch1/2
-	ld a,d			;4
-	ld (buffer+3),a		;13
-	ld a,e			;4
-	ld (buffer+7),a		;13	
-	pop hl			;10	;freq.ch3
-	ld (buffer+8),hl	;16
-	pop hl			;10	;freq.ch4
-	ld (buffer+12),hl	;20
-	pop de			;10	;sample.ch3/4
-	ld a,d			;4
-	ld (buffer+11),a	;13
-	ld a,e			;4
-	ld (buffer+15),a	;13
-	ld (patpntr),sp		;20
-				;212
-				
-	xor a
-IF Z80=NMOS
-	out (#fe),a
-ENDIF
-	ld h,a
-	ld l,a
-	ld d,a
-	ld e,a
 
-	exx
-	ld h,a
-	ld l,a
-	ld d,a
-	ld e,a
-		
+        dec sp
+        dec sp
+        pop af
+
+	ld i,a
+
+        ld (_oldHL),hl
+
+        jr nc,_no_ch1_update
+
+        pop hl
+        ld (buffer),hl
+        pop hl
+        dec sp
+        ld a,l
+        ld (buffer+3),a
+        ld hl,0
+        ld (_oldHL),hl
+
+_no_ch1_update
+        jr nz,_no_ch2_update
+
+        pop hl
+        ld (buffer+4),hl
+        pop hl
+        dec sp
+        ld a,l
+        ld (buffer+7),a
+        ld de,0
+
+_no_ch2_update
+        jp po,_no_ch3_update
+
+        pop hl
+        ld (buffer+8),hl
+        pop hl
+        dec sp
+        ld a,l
+        ld (buffer+11),a
+        exx
+        ld hl,0
+        exx
+
+_no_ch3_update
+        jp p,_no_ch4_update
+        pop hl
+        ld (buffer+12),hl
+        pop hl
+        ld a,l
+        dec sp
+        ld (buffer+15),a
+        exx
+        ld de,0
+        exx
+
+_no_ch4_update
+	ld (patpntr),sp
+_oldHL equ $+1
+        ld hl,0
+
 	ex af,af'
 	ld a,#fe		;set timer lo-byte
-IF Z80=CMOS
-	out (#fe),a
-ENDIF
 	ex af,af'
-	
-	;ld bc,pon
-	jp pEntry
-	;jp core0
-	
-;************************************************************************************************	
+
+        jp pEntry
+
+;************************************************************************************************
 core0						;volume 0
 IF (LOW($))!=0
 	org 256*(1+(HIGH($)))
@@ -161,7 +179,7 @@ _frame1
 	dec a			;4
 	jp z,updateTimerND	;10
 	ex af,af'		;4
-pEntry	
+pEntry
 	ld sp,buffer		;10
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
@@ -185,15 +203,15 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 17			;68		;14x nop
 				;152
-	
+
 _frame3
 	db #ed,#71		;12___12
-	nop			;4	
+	nop			;4
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -216,12 +234,12 @@ _frame4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
-	
+
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ds 7			;28
 	cp maxc			;7
@@ -231,7 +249,7 @@ _frame4
 
 ;************************************************************************************************
 buffer
-	ds 16					;4x base freq, 4x base sample pointer	
+	ds 16					;4x base freq, 4x base sample pointer
 
 ;************************************************************************************************
 core1	org 256*(1+(HIGH($)))				;volume 1 ... 12 t-states
@@ -242,7 +260,7 @@ _frame1
 	dec a			;4
 	jp z,updateTimerND	;10
 	ex af,af'		;4
-	
+
 	ld sp,buffer		;10
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
@@ -267,16 +285,16 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 14			;56		;14x nop
 				;152
-	
+
 _frame3
 	out (c),b		;12
 	db #ed,#71		;12___12
-	nop			;4	
+	nop			;4
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -300,12 +318,12 @@ _frame4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
-	
+
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ds 4			;16
 	cp maxc			;7
@@ -313,17 +331,17 @@ _frame4
 	jp (ix)			;8
 				;152
 
-;************************************************************************************************					
+;************************************************************************************************
 core2	org 256*(1+(HIGH($)))				;volume 2 ... 16 t-states
 _frame1
 	out (c),b		;12___
 	ex af,af'		;4
 	db #ed,#71		;12___16
-	
+
 	dec a			;4
 	jp z,updateTimerND	;10
 	ex af,af'		;4
-	
+
 	ld sp,buffer		;10
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
@@ -348,16 +366,16 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 14			;56		;14x nop
 				;152
-	
+
 _frame3
 	out (c),b		;12
 	nop			;4
-	db #ed,#71		;12___16	
+	db #ed,#71		;12___16
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -374,7 +392,7 @@ _frame4
 	out (c),b		;12___
 	ex de,hl		;4
 	db #ed,#71		;12___16
-	
+
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -382,12 +400,12 @@ _frame4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
-	
+
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ds 4			;16
 	cp maxc			;10
@@ -395,8 +413,8 @@ _frame4
 	jp (ix)			;8
 				;152
 
-	
-;************************************************************************************************	
+
+;************************************************************************************************
 core3	org 256*(1+(HIGH($)))			;volume  3 ... 24 t-states
 _frame1
 	out (c),b		;12___
@@ -404,10 +422,10 @@ _frame1
 	dec a			;4
 	nop			;4
 	db #ed,#71		;12___24
-	
+
 	jp z,updateTimerND	;10
 	ex af,af'		;4
-	
+
 	ld sp,buffer		;10
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
@@ -433,7 +451,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 12			;48		;14x nop
@@ -444,7 +462,7 @@ _frame3
 	nop			;4
 	nop			;4
 	nop			;4
-	db #ed,#71		;12___24	
+	db #ed,#71		;12___24
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -463,7 +481,7 @@ _frame4
 	nop			;4
 	nop			;4
 	db #ed,#71		;12___24
-	
+
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -471,12 +489,12 @@ _frame4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
-	
+
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ds 2			;8
 	cp maxc			;7
@@ -492,10 +510,10 @@ _frame1
 	dec a			;4
 	ds 3			;12
 	db #ed,#71		;12___32
-	
+
 	jp z,updateTimerND	;10
 	ex af,af'		;4
-	
+
 	ld sp,buffer		;10
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
@@ -521,7 +539,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 10			;40
@@ -534,7 +552,7 @@ _frame3
 	nop			;4
 	nop			;4
 	nop			;4
-	db #ed,#71		;12___32	
+	db #ed,#71		;12___32
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -553,19 +571,19 @@ _frame4
 	pop bc			;10
 	ld a,poff		;7
 	out (#fe),a		;11___32
-	
+
 	add hl,bc		;11
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
 
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ld bc,pon		;10	;timing
 	cp maxc			;7
@@ -582,8 +600,8 @@ _frame1
 	jp z,updateTimer	;10
 	ld sp,buffer		;10
 	db #ed,#71		;12___40
-	
-	ex af,af'		;4	
+
+	ex af,af'		;4
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
 	pop bc			;10
@@ -608,7 +626,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 8			;32
@@ -617,7 +635,7 @@ _frame2
 _frame3
 	out (c),b		;12
 	ds 7			;28
-	db #ed,#71		;12___40	
+	db #ed,#71		;12___40
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -638,18 +656,18 @@ _frame4
 	pop bc			;10
 	add hl,bc		;11
 	out (#fe),a		;11___40
-	
+
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
 
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ld (#0000),a		;13	;timing
 	cp maxc			;7
@@ -668,7 +686,7 @@ _frame1
 	ld sp,buffer		;10
 	nop			;4
 	db #ed,#71		;12___48
-		
+
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
 	pop bc			;10
@@ -693,7 +711,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 6			;24
@@ -702,7 +720,7 @@ _frame2
 _frame3
 	out (c),b		;12
 	ds 9			;36
-	db #ed,#71		;12___48	
+	db #ed,#71		;12___48
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -724,18 +742,18 @@ _frame4
 	add hl,bc		;11
 	ds 2			;8
 	out (#fe),a		;11___48
-	
+
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
 
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ret z			;5	;timing - safe while using reasonable values (total vol <#7f)
 	cp maxc			;7
@@ -754,7 +772,7 @@ _frame1
 	ld sp,buffer		;10
 	ds 3			;12
 	db #ed,#71		;12___56
-		
+
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
 	pop bc			;10
@@ -779,7 +797,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 4			;16
@@ -788,7 +806,7 @@ _frame2
 _frame3
 	out (c),b		;12
 	ds 11			;44
-	db #ed,#71		;12___56	
+	db #ed,#71		;12___56
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -816,14 +834,14 @@ _frame4
 	ld a,(bc)		;7
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
 
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
-	
+
 	cp maxc			;7
 	jp nc,overdrive0	;10
 	ld a,0			;7	;timing
@@ -841,7 +859,7 @@ _frame1
 	ld sp,buffer		;10
 	ds 5			;20
 	db #ed,#71		;12___64
-		
+
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
 	pop bc			;10
@@ -866,7 +884,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ds 2			;8
@@ -875,7 +893,7 @@ _frame2
 _frame3
 	out (c),b		;12
 	ds 13			;52
-	db #ed,#71		;12___64	
+	db #ed,#71		;12___64
 	pop bc			;10
 	add hl,bc		;11
 	pop bc			;10
@@ -902,12 +920,12 @@ _frame4
 
 	ld a,(bc)		;7
 	add a,iyh		;8
-	
+
 	exx			;4
 
 	add a,basec		;7
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	cp maxc			;7
 	jp nc,overdrive0	;10
@@ -929,7 +947,7 @@ _frame1
 	dec a
 	ex af,af'
 	db #ed,#71		;12___72
-		
+
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
 	pop bc			;10
@@ -951,7 +969,7 @@ _frame2
 	ld c,h			;4
 	ld a,(bc)		;7
 	ld iyl,a		;8
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 				;152
@@ -966,7 +984,7 @@ _frame3
 	ld bc,pon		;10
 	add a,iyh		;8
 	db #ed,#71		;12___72
-	
+
 	add a,iyl		;8
 	ld iyh,a		;8
 	ds 13			;52
@@ -983,14 +1001,14 @@ _frame4
 	add a,basec		;7
 	ld c,#fe		;7
 	db #ed,#71		;12___72
-	
+
 	ex de,hl		;4
 	add a,iyh		;8
-	
+
 	exx			;4
-	
+
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ld r,a			;9
 	cp maxc			;7
@@ -1012,7 +1030,7 @@ _frame1
 	dec a
 	ex af,af'
 	db #ed,#71		;12___80
-		
+
 	pop bc			;10		;base freq 1
 	add hl,bc		;11
 	pop bc			;10
@@ -1030,12 +1048,12 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	nop			;4
 	ld bc,pon		;10
 	db #ed,#71		;12___80
-	
+
 	ld iyl,a		;8
 	ds 13			;52
 				;152
@@ -1051,7 +1069,7 @@ _frame3
 	add a,iyh		;8
 	add a,iyl		;8
 	db #ed,#71		;12___80
-	
+
 	ld iyh,a		;8
 	ds 13			;52
 				;152
@@ -1069,11 +1087,11 @@ _frame4
 	exx			;4
 	ld c,#fe		;7
 	db #ed,#71		;12___80
-	
+
 	add a,iyh		;8
-	
+
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10	;ld b,#18 will be enough
 	ld r,a			;9
 	cp maxc			;7
@@ -1098,7 +1116,7 @@ _frame1
 	dec a
 	ex af,af'
 	db #ed,#71		;12___88
-		
+
 	pop bc			;10
 	ld c,h			;4
 	ld (#0000),a		;13		;timing
@@ -1116,7 +1134,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	nop			;4
 	ld bc,pon		;10
@@ -1154,9 +1172,9 @@ _frame4
 	exx			;4
 	ld c,#fe		;7
 	db #ed,#71		;12___88
-	
+
 	ld ixh,a		;8
-	
+
 	ld bc,pon		;10
 	ld r,a			;9
 	cp maxc			;7
@@ -1180,7 +1198,7 @@ _frame1
 	ld a,(bc)		;7
 	ld bc,pon		;10
 	db #ed,#71		;12___96
-		
+
 	ld iyh,a		;8
 	ds 6			;36
 	ex af,af'
@@ -1196,7 +1214,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ld iyl,a		;8
@@ -1236,7 +1254,7 @@ _frame4
 	exx			;4
 	ld c,#fe		;7
 	db #ed,#71		;12___96
-	
+
 	ld bc,pon		;10	;ld b,#18 will do
 	ld r,a			;9
 	cp maxc			;7
@@ -1276,7 +1294,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ld iyl,a		;8
@@ -1317,14 +1335,14 @@ _frame4
 	ld bc,pon		;10
 	ret z			;5	;timing - Z is never set when using reasonable values (total vol <#7f)
 	db #ed,#71		;12___104
-	
+
 	nop			;4
 	cp maxc			;7
 	jp nc,overdrive0	;10
 	ld a,0			;7
 	jp (ix)			;8
 				;152
-				
+
 ;************************************************************************************************
 core14	org 256*(1+(HIGH($)))			;volume 14 ... 112 t-states
 _frame1
@@ -1358,7 +1376,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ld iyl,a		;8
@@ -1438,7 +1456,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ld iyl,a		;8
@@ -1518,7 +1536,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ld iyl,a		;8
@@ -1573,7 +1591,7 @@ _frame4
 overdrivey
 	db #ed,#71
 	jr overdrive
-overdrivex	
+overdrivex
 	db #ed,#71
 	jr core17
 overdrive0
@@ -1612,7 +1630,7 @@ _frame2
 	pop bc			;10
 	ld c,h			;4
 	ld a,(bc)		;7
-	ex de,hl		;4	
+	ex de,hl		;4
 	exx			;4
 	ld bc,pon		;10
 	ld iyl,a		;8
@@ -1657,6 +1675,6 @@ _frame4
 
 samples
 	include "samples.asm"
-	
+
 musicdata
 	include "music.asm"

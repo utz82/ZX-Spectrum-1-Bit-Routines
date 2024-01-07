@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 
@@ -6,23 +7,20 @@ using namespace std;
 
 unsigned fileoffset;
 unsigned char songlength;
-char cp; // read value
 ifstream INFILE;
+const unsigned char flags[] = {1, 0x40, 4, 0x80};
 
 bool isPatternUsed(int patnum);
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char* argv[]) {
   cout << "XM 2 FLUIDCORE CONVERTER\n";
 
   // check for "-v" flag
   string arg = "";
-  if (argc > 1)
-    arg = argv[1];
+  if (argc > 1) arg = argv[1];
 
   // open music.xm
   INFILE.open("music.xm", ios::in | ios::binary);
-  // ifstream INFILE;
   if (!INFILE.is_open()) {
     cout << "Error: Could not open music.xm\n";
     return -1;
@@ -38,19 +36,24 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  auto readByte = [](unsigned offset) -> unsigned char {
+    char c;
+    INFILE.seekg(offset, ios::beg);
+    INFILE.read((&c), 1);
+    return static_cast<unsigned char>(c);
+  };
+
   // verify xm parameters
-  INFILE.seekg(58, ios::beg); // read version
-  INFILE.read((&cp), 1);
-  if (cp != 4) {
-    cout << "Error: Obsolete XM version 1.0" << +cp << ", v1.04 required"
-         << endl;
+  if (readByte(58) != 4) {
+    cout << "Error: Obsolete XM version 1.0" << +readByte(58)
+         << ", v1.04 required" << endl;
     return -1;
   }
 
-  INFILE.seekg(68, ios::beg); // read # of channels
-  INFILE.read((&cp), 1);
-  if (cp != 4) {
-    cout << "Error: XM has " << +cp << " channels instead of 4" << endl;
+  // read # of channels
+  if (readByte(68) != 4) {
+    cout << "Error: XM has " << +readByte(68) << " channels instead of 4"
+         << endl;
     return -1;
   }
 
@@ -58,70 +61,40 @@ int main(int argc, char *argv[]) {
   unsigned char uniqueptns;
   unsigned char speed;
 
-  INFILE.seekg(64, ios::beg); // read song length
-  INFILE.read((&cp), 1);
-  songlength = static_cast<unsigned char>(cp);
-  if (arg == "-v")
-    cout << "song length:     " << +songlength << endl;
+  // read song length
+  songlength = readByte(64);
+  if (arg == "-v") cout << "song length:     " << +songlength << endl;
 
-  INFILE.seekg(70, ios::beg); // read # of unique patterns
-  INFILE.read((&cp), 1);
-  uniqueptns = static_cast<unsigned char>(cp);
-  if (arg == "-v")
-    cout << "unique patterns: " << +uniqueptns << endl;
+  // read # of unique patterns
+  uniqueptns = readByte(70);
+  if (arg == "-v") cout << "unique patterns: " << +uniqueptns << endl;
 
-  INFILE.seekg(76, ios::beg); // read global tempo
-  INFILE.read((&cp), 1);
-  speed = static_cast<unsigned char>(cp);
-  if (arg == "-v")
-    cout << "global tempo:    " << +cp << endl;
-  // OUTFILE << "\n\tdb #" << hex << +cp << "\t\t;speed" << endl;	//write
-  // it to music.asm as hex
+  // read global tempo
+  speed = readByte(76);
+  if (arg == "-v") cout << "global tempo:    " << +readByte(76) << endl;
 
   // locate the pattern headers and read pattern lengths
   unsigned ptnoffsetlist[256];
   unsigned ptnlengths[256];
-  unsigned headlength, packedlength, xmhead;
+  unsigned headlength, packedlength;
   unsigned char pp;
   int i;
 
-  // determine XM header length
-  INFILE.seekg(61, ios::beg);
-  INFILE.read((&cp), 1);
-  pp = static_cast<unsigned char>(cp);
-  xmhead = pp * 256;
-  INFILE.seekg(60, ios::beg);
-  INFILE.read((&cp), 1);
-  pp = static_cast<unsigned char>(cp);
-  xmhead += pp;
-
-  ptnoffsetlist[0] = xmhead + 60;
+  // first pattern is at 60 + XM header length
+  ptnoffsetlist[0] = 60 + readByte(60) + readByte(61) * 256;
   fileoffset = ptnoffsetlist[0];
 
   for (i = 0; i < uniqueptns; i++) {
-
-    INFILE.seekg(fileoffset, ios::beg);
-    INFILE.read((&cp), 1);
-    pp = static_cast<unsigned char>(cp);
-    headlength = static_cast<unsigned>(pp);
+    headlength = static_cast<unsigned>(readByte(fileoffset));
 
     fileoffset += 5;
-    INFILE.seekg(fileoffset, ios::beg);
-    INFILE.read((&cp), 1);
-    pp = static_cast<unsigned char>(cp);
-    ptnlengths[i] = static_cast<unsigned>(pp);
+    ptnlengths[i] = static_cast<unsigned>(readByte(fileoffset));
 
     fileoffset += 2;
-    INFILE.seekg(fileoffset, ios::beg);
-    INFILE.read((&cp), 1);
-    pp = static_cast<unsigned char>(cp);
-    packedlength = static_cast<unsigned>(pp);
+    packedlength = static_cast<unsigned>(readByte(fileoffset));
 
     fileoffset++;
-    INFILE.seekg(fileoffset, ios::beg);
-    INFILE.read((&cp), 1);
-    pp = static_cast<unsigned char>(cp);
-    packedlength += (static_cast<unsigned>(pp)) * 256;
+    packedlength += (static_cast<unsigned>(readByte(fileoffset))) * 256;
 
     ptnoffsetlist[i + 1] = ptnoffsetlist[i] + headlength + packedlength;
     fileoffset = fileoffset + packedlength + 1;
@@ -137,10 +110,7 @@ int main(int argc, char *argv[]) {
 
   for (fileoffset = 80; fileoffset < ((unsigned)songlength + 80);
        fileoffset++) {
-
-    INFILE.seekg(fileoffset, ios::beg);
-    INFILE.read((&cp), 1);
-    OUTFILE << "\tdw ptn" << hex << +cp << endl;
+    OUTFILE << "\tdw ptn" << hex << +readByte(fileoffset) << endl;
   }
   OUTFILE << "\tdw 0\n\n;pattern data\n";
 
@@ -159,300 +129,210 @@ int main(int argc, char *argv[]) {
       0xAADC, 0xB505, 0xBFC9, 0xCB30, 0xD745, 0xE412, 0xF1A2};
 
   // convert pattern data
-  int m, x, note, notech1, notech2, notech3, notech4;
-  unsigned char rows;
+  int track;
+  unsigned char row, ctrlbyte;
   unsigned char insamnt = 0;
   bool insused;
   char temp;
-  int detune1 = 0;
-  int detune2 = 0;
-  int detune3 = 0;
-  int detune4 = 0;
+  int detune[] = {0, 0, 0, 0};
+  int freq[] = {0, 0, 0, 0};
+  int previousFreq[4];
+  // unsigned char previousInstr[4];
+  bool triggers[4];
   int debug = 0;
-  int ch1[257], ch2[257], ch3[257], ch4[257]; // was unsigned
-  unsigned char instr1[257], instr2[257], instr3[257], instr4[257], rspeed[257],
-      instruments[257];
-  for (i = 0; i < 257; ++i)
-    instruments[i] = 0;
+  int notes[4][257];  // [track][row]
+  unsigned char instr[4][257];
+  unsigned char rspeed[257], instruments[257];
+
+  for (i = 0; i < 257; ++i) instruments[i] = 0;
 
   for (i = 0; i <= (uniqueptns)-1; i++) {
-
     if (isPatternUsed(i)) {
-
       OUTFILE << "ptn" << i << endl;
-      ch1[0] = 0;
-      ch2[0] = 0;
-      ch3[0] = 0; // tone/slide
-      ch4[0] = 0; // tone/noise
-      instr1[0] = 0;
-      instr2[0] = 0;
-      instr3[0] = 0;
-      instr4[0] = 0;
+
+      for (track = 0; track < 4; ++track) {
+        notes[track][0] = 0;
+        instr[track][0] = 0;
+        // previousInstr[track] = 0;
+        previousFreq[track] = 0;
+      }
+
       rspeed[0] = speed;
 
       fileoffset = ptnoffsetlist[i] + 9;
 
-      for (rows = 1; rows <= ptnlengths[i]; rows++) {
+      for (row = 1; row <= ptnlengths[i]; row++) {
+        ctrlbyte = 0;
 
-        ch1[rows] = ch1[rows - 1];
-        ch2[rows] = ch2[rows - 1];
-        ch3[rows] = ch3[rows - 1];
-        ch4[rows] = ch4[rows - 1];
+        for (track = 0; track < 4; ++track) {
+          notes[track][row] = notes[track][row - 1];
+          instr[track][row] = instr[track][row - 1];
+        }
 
-        instr1[rows] = instr1[rows - 1];
-        instr2[rows] = instr2[rows - 1];
-        instr3[rows] = instr3[rows - 1];
-        instr4[rows] = instr4[rows - 1];
+        rspeed[row] = rspeed[row - 1];
 
-        rspeed[rows] = rspeed[rows - 1];
+        for (track = 0; track <= 3; track++) {
+          triggers[track] = false;
+          pp = readByte(fileoffset);
 
-        for (m = 0; m <= 3; m++) {
-
-          INFILE.seekg(fileoffset, ios::beg);
-          INFILE.read((&cp), 1);
-          pp = static_cast<unsigned char>(cp);
-
-          if (pp >= 128) { // have compressed pattern data
+          if (pp >= 128) {  // have compressed pattern data
 
             fileoffset++;
 
             if (pp != 128) {
+              temp = readByte(fileoffset);
 
-              INFILE.seekg(fileoffset, ios::beg);
-              INFILE.read((&temp), 1);
-              temp = static_cast<unsigned char>(temp);
+              if ((pp & 1) ==
+                  1) {  // if bit 0 is set, it's note -> counter val.
 
-              if ((pp & 1) == 1) { // if bit 0 is set, it's note -> counter val.
+                if (temp == 97) temp = 0;  // silence
 
-                if (temp == 97)
-                  temp = 0; // silence
-
-                note = notetab[static_cast<int>(temp)];
-                if (m == 0)
-                  ch1[rows] = note;
-                if (m == 1)
-                  ch2[rows] = note;
-                if (m == 2)
-                  ch3[rows] = note;
-                if (m == 3)
-                  ch4[rows] = note;
-
+                notes[track][row] = notetab[static_cast<int>(temp)];
+                triggers[track] = true;
                 fileoffset++;
-                INFILE.seekg(fileoffset, ios::beg); // read next byte
-                INFILE.read((&temp), 1);
-                temp = static_cast<unsigned char>(temp);
+                temp = readByte(fileoffset);
               }
 
-              if ((pp & 2) == 2) { // if bit 1 is set, it's instrument
-
-                if (m == 0)
-                  instr1[rows] = temp;
-                if (m == 1)
-                  instr2[rows] = temp;
-                if (m == 2)
-                  instr3[rows] = temp;
-                if (m == 3)
-                  instr4[rows] = temp;
-
+              if ((pp & 2) == 2) {  // if bit 1 is set, it's instrument
+                instr[track][row] = temp;
                 fileoffset++;
-                INFILE.seekg(fileoffset, ios::beg); // read next byte
-                INFILE.read((&temp), 1);
-                temp = static_cast<unsigned char>(temp);
+                temp = readByte(fileoffset);
               }
 
-              if ((pp & 4) == 4) { // if bit 2 is set, it's volume -> ignore
+              if ((pp & 4) == 4) {  // if bit 2 is set, it's volume -> ignore
                 fileoffset++;
-                INFILE.seekg(fileoffset, ios::beg); // read next byte
-                INFILE.read((&temp), 1);
-                temp = static_cast<unsigned char>(temp);
+                temp = readByte(fileoffset);
               }
 
               if ((pp & 8) == 8 &&
                   temp ==
-                      0xb) { // if bit 3 is set and value is $b (jump to order)
+                      0xb) {  // if bit 3 is set and value is $b (jump to order)
                 fileoffset++;
-                INFILE.seekg(fileoffset, ios::beg); // read next byte
-                INFILE.read((&temp), 1);
-                temp = static_cast<unsigned char>(temp);
+                temp = readByte(fileoffset);
                 looppoint = temp * 2;
                 fileoffset++;
 
               } else if ((pp & 8) == 8 &&
-                         temp == 0xf) { // if bit 3 is set and value is $f (set
-                                        // speed)
+                         temp == 0xf) {  // if bit 3 is set and value is $f (set
+                                         // speed)
                 fileoffset++;
-                INFILE.seekg(fileoffset, ios::beg); // read next byte
-                INFILE.read((&temp), 1);
-                temp = static_cast<unsigned char>(temp);
-                if (temp < 0x20)
-                  rspeed[rows] = temp;
+                temp = readByte(fileoffset);
+                if (temp < 0x20) rspeed[row] = temp;
                 fileoffset++;
 
               } else if ((pp & 8) == 8 &&
-                         temp == 0xe) { // if bit 3 is set and value is $e5x
-                                        // (finetune)
+                         temp == 0xe) {  // if bit 3 is set and value is $e5x
+                                         // (finetune)
 
                 fileoffset++;
-                INFILE.seekg(fileoffset, ios::beg); // read next byte
-                INFILE.read((&temp), 1);
-                temp = static_cast<unsigned char>(temp);
+                temp = readByte(fileoffset);
 
                 if ((temp & 0xf0) == 0x50) {
                   temp = (temp & 0xf) - 8;
-                  if (m == 0)
-                    detune1 = int(ch1[rows] / 100) * temp;
-                  if (m == 0)
-                    detune2 = int(ch2[rows] / 100) * temp;
-                  if (m == 0)
-                    detune3 = int(ch3[rows] / 100) * temp;
-                  if (m == 0)
-                    detune4 = int(ch4[rows] / 100) * temp;
+                  detune[track] = int(notes[track][row] / 100) * temp;
                 }
 
                 fileoffset++;
               }
             }
 
-          } else { // uncompressed pattern data
+          } else {  // uncompressed pattern data
 
             // read notes
             temp = pp;
-            if (temp == 97)
-              temp = 0; // silence
-            // noteval = temp;
+            if (temp == 97) temp = 0;  // silence
 
-            note = notetab[static_cast<int>(temp)];
-            if (m == 0)
-              ch1[rows] = note;
-            if (m == 1)
-              ch2[rows] = note;
-            if (m == 2)
-              ch3[rows] = note;
-            if (m == 3)
-              ch4[rows] = note;
-
-            fileoffset++;
-            INFILE.seekg(fileoffset, ios::beg); // read next byte
-            INFILE.read((&temp), 1);
-            temp = static_cast<unsigned char>(temp);
+            notes[track][row] = notetab[static_cast<int>(temp)];
+            triggers[track] = true;
 
             // read instruments
-            if (m == 0)
-              instr1[rows] = temp;
-            if (m == 1)
-              instr2[rows] = temp;
-            if (m == 2)
-              instr3[rows] = temp;
-            if (m == 3)
-              instr4[rows] = temp;
+            fileoffset++;
+            temp = readByte(fileoffset);
+            instr[track][row] = temp;
 
             // read and ignore volume
             fileoffset++;
-            INFILE.seekg(fileoffset, ios::beg); // read next byte
-            INFILE.read((&temp), 1);
-            temp = static_cast<unsigned char>(temp);
+            temp = readByte(fileoffset);
 
             // read fx command
             fileoffset++;
-            INFILE.seekg(fileoffset, ios::beg); // read next byte
-            INFILE.read((&temp), 1);
-            temp = static_cast<unsigned char>(temp);
+            temp = readByte(fileoffset);
             pp = temp;
 
             // read fx parameter
             fileoffset++;
-            INFILE.seekg(fileoffset, ios::beg); // read next byte
-            INFILE.read((&temp), 1);
-            temp = static_cast<unsigned char>(temp);
-
-            // evaluate fx
-            if (pp == 0xb)
-              looppoint = temp * 2;
-            if (pp == 0xf && temp < 0x20)
-              rspeed[rows] = temp;
-            if (pp == 0xe && (temp & 0xf) == 0x50) {
+            temp = readByte(fileoffset);
+            if (pp == 0xb) looppoint = temp * 2;
+            if (pp == 0xf && temp < 0x20) rspeed[row] = temp;
+            if (pp == 0xe && (temp & 0xf0) == 0x50) {
               temp = (temp & 0xf) - 8;
-              if (m == 0)
-                detune1 = int(ch1[rows] / 100) * temp;
-              if (m == 0)
-                detune2 = int(ch2[rows] / 100) * temp;
-              if (m == 0)
-                detune3 = int(ch3[rows] / 100) * temp;
-              if (m == 0)
-                detune4 = int(ch4[rows] / 100) * temp;
+              detune[track] = int(notes[3][row] / 100) * temp;
             }
 
-            // advance file pointer
             fileoffset++;
           }
         }
 
-        if (ch1[rows] == 0)
-          instr1[rows] = 0;
-        if (ch2[rows] == 0)
-          instr2[rows] = 0;
-        if (ch3[rows] == 0)
-          instr3[rows] = 0;
-        if (ch4[rows] == 0)
-          instr4[rows] = 0;
+        for (track = 0; track < 4; ++track) {
+          if (notes[track][row] == 0) instr[track][row] = 0;
+          freq[track] = notes[track][row] + detune[track];
+          if (triggers[track] || (freq[track] != previousFreq[track]) ||
+              instr[track][row] != instr[track][row - 1]) {
+            ctrlbyte |= flags[track];
+          }
+        }
 
-        notech1 = ch1[rows] + detune1;
-        notech2 = ch2[rows] + detune2;
-        notech3 = ch3[rows] + detune3;
-        notech4 = ch4[rows] + detune4;
+        if (row == 1) ctrlbyte = flags[0] + flags[1] + flags[2] + flags[3];
 
-        OUTFILE << "\tdw #" << hex << +rspeed[rows] << "00,#" << +notech1
-                << ",#" << +notech2;
-        OUTFILE << ",(HIGH(smp" << +instr1[rows] << "))*256+(HIGH(smp"
-                << +instr2[rows] << ")),#";
-        OUTFILE << +notech3 << ",#" << +notech4 << ",(HIGH(smp" << +instr3[rows]
-                << "))*256+(HIGH(smp" << +instr4[rows] << "))\n";
+        // OUTFILE << "\tdw #" << hex << setfill('0') << setw(2) << +rspeed[row]
+        //         << setw(2) << +ctrlbyte;
+        // for (track = 0; track < 4; ++track) {
+        //   if (ctrlbyte & flags[track]) {
+        //     OUTFILE << ",#" << +freq[track] << ",(HIGH(smp"
+        //             << +instr[track][row] << "))*256";
+        //   }
+        // }
+
+        OUTFILE << "\tdb #" << hex << +ctrlbyte << ",#" << +rspeed[row];
+        for (track = 0; track < 4; ++track) {
+          if (ctrlbyte & flags[track]) {
+            OUTFILE << ",#" << +(freq[track] & 0xff) << ",#"
+                    << +((freq[track] >> 8) & 0xff) << ",(HIGH(smp"
+                    << +instr[track][row] << "))";
+          }
+        }
+
+        OUTFILE << endl;
+
+        // OUTFILE << "\tdw #" << hex << +rspeed[row] << "00,#" << +freq[0] <<
+        // ",#"
+        //         << +freq[1];
+        // OUTFILE << ",(HIGH(smp" << +instr[0][row] << "))*256+(HIGH(smp"
+        //         << +instr[1][row] << ")),#";
+        // OUTFILE << +freq[2] << ",#" << +freq[3] << ",(HIGH(smp"
+        //         << +instr[2][row] << "))*256+(HIGH(smp" << +instr[3][row]
+        //         << "))\n";
+
+        for (track = 0; track < 4; ++track) {
+          previousFreq[track] = freq[track];
+          // previousInstr[track] = instr[track][row];
+        }
 
         // update instrument list
-        insused = false;
-        for (x = 0; x < 256; x++) {
-          if (instr1[rows] == instruments[x])
-            insused = true;
+        for (track = 0; track < 4; ++track) {
+          insused = false;
+          for (int x = 0; x < 256; x++) {
+            if (instr[track][row] == instruments[x]) insused = true;
+          }
+          if (insused == false) {
+            insamnt++;
+            instruments[insamnt] = instr[track][row];
+          }
         }
-        if (insused == false) {
-          insamnt++;
-          instruments[insamnt] = instr1[rows];
-        }
-        insused = false;
-        for (x = 0; x < 256; x++) {
-          if (instr2[rows] == instruments[x])
-            insused = true;
-        }
-        if (insused == false) {
-          insamnt++;
-          instruments[insamnt] = instr2[rows];
-        }
-        insused = false;
-        for (x = 0; x < 256; x++) {
-          if (instr3[rows] == instruments[x])
-            insused = true;
-        }
-        if (insused == false) {
-          insamnt++;
-          instruments[insamnt] = instr3[rows];
-        }
-        insused = false;
-        for (x = 0; x < 256; x++) {
-          if (instr4[rows] == instruments[x])
-	    insused = true;
-        }
-        if (insused == false) {
-          insamnt++;
-          instruments[insamnt] = instr4[rows];
-        }
-
-        detune1 = 0;
-        detune2 = 0;
-        detune3 = 0;
-        detune4 = 0;
+        for (track = 0; track < 3; ++track) detune[track] = 0;
       }
 
-      OUTFILE << "\tdb #40\n\n";
+      OUTFILE << "\tdw 0\n\n";
     }
   }
 
@@ -491,9 +371,9 @@ int main(int argc, char *argv[]) {
     i++;
   }
 
-  for (x = 1; x <= insamnt; x++) {
-    OUTFILE << "smp" << +instruments[x] << "\n\t"
-            << "include \"samples/" << instrnames[(instruments[x] - 1)]
+  for (i = 1; i <= insamnt; ++i) {
+    OUTFILE << "smp" << +instruments[i] << "\n\t"
+            << "include \"samples/" << instrnames[(instruments[i] - 1)]
             << "\"\n";
   }
 
@@ -504,15 +384,14 @@ int main(int argc, char *argv[]) {
 
 // check if a pattern exists in sequence
 bool isPatternUsed(int patnum) {
-
   int usage = false;
+  char cp;
 
   for (fileoffset = 80; fileoffset < ((unsigned)songlength + 80);
        fileoffset++) {
     INFILE.seekg(fileoffset, ios::beg);
     INFILE.read((&cp), 1);
-    if (patnum == static_cast<unsigned char>(cp))
-      usage = true;
+    if (patnum == static_cast<unsigned char>(cp)) usage = true;
   }
 
   return (usage);

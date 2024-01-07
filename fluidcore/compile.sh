@@ -21,7 +21,7 @@ fi
 
 #set compile address to default if none was given
 if [ -z $addr ]; then
-	addr="32864"
+	addr="32828"
 fi
 caddr=$(($addr - 1))
 
@@ -48,3 +48,4 @@ pasmo --equ origin=$addr --equ Z80=2 --alocal --tap main.asm main.tap
 cat loader.tap main.tap >test-cmos.tap
 rm main.tap
 fuse --no-confirm-actions -m 48 -t test-nmos.tap
+#fuse --no-confirm-actions --debugger-command="br 32828" -m 48 test-nmos.tap
