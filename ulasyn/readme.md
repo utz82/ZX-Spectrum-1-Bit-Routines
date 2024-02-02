@@ -9,6 +9,7 @@ a ZX Spectrum beeper engine with filters
 - variable duty cycle
 - duty cycle sweep with variable speed
 - noise mode (channel 2 only)
+- volume control (up to 6 levels)
 - filters with variable cutoff (6 levels for lo-pass, 5 levels for hi-pass)
 - sample rate 9114 Hz
 - interrupting PWM sampled drums at 18229 Hz with 7 pitch and 3 volume levels
@@ -63,21 +64,28 @@ The first row of a song must contain a full update of both channels.
  ulasyn's filters use pre-calculated transformation tables. The following tables
  are predefined:
 
-- `t_filter_off`
-- `t_lp_cutoff1`
-- `t_lp_cutoff1dot5`
-- `t_lp_cutoff2`..`t_lp_cutoff5`
-- `t_hp_cutoff1`..`t_hp_cutoff5`
+- `t_filter_off_vol1` .. `t_filter_off_vol6`
+- `t_lp_cutoff1_vol2` .. `t_lp_cutoff1_vol6`
+- `t_lp_cutoff1dot5_vol1` .. `t_lp_cutoff1dot5_vol6`
+- `t_lp_cutoff2_vol2` .. `t_lp_cutoff2_vol6`
+- `t_lp_cutoff3_vol2` .. `t_lp_cutoff3_vol6`
+- `t_lp_cutoff4_vol2` .. `t_lp_cutoff4_vol6`
+- `t_lp_cutoff5_vol2` .. `t_lp_cutoff5_vol6`
+- `t_hp_cutoff1_vol2` .. `t_hp_cutoff1_vol6`
+- `t_hp_cutoff2_vol3` .. `t_hp_cutoff1_vol6`
+- `t_hp_cutoff3_vol4` .. `t_hp_cutoff1_vol6`
+- `t_hp_cutoff4_vol5` .. `t_hp_cutoff1_vol6`
+- `t_hp_cutoff5_vol6`
 
-`t_lp_cutoff1dot5` is using experimentally derived values which are inexact.
-Its characteristics differ slightly from the other, mathematically derived
-low-pass filters. It will usually be good enough as an intermediate step between
-cutoff1 and cutoff2 in a simulated filter sweep.
+`t_lp_cutoff1dot5_*` are using experimentally derived values which are inexact.
+Their characteristics differ slightly from the other, mathematically derived
+low-pass filters. They will usually be good enough as an intermediate step
+between cutoff1 and cutoff2 in a simulated filter sweep.
 
 You can define your own filter tables. A filter table must be aligned to a
 16-byte border, and must contain 14 entries in the range of 0..6. Each entry *n*
 in the table represents the result of transitioning from volume n>>1 to volume
-(n & 1) * 6.
+(n & 1) * maximum_volume.
 
 
 ### Noise mode

@@ -7,104 +7,112 @@
     dw .loop
 
 .p00
-    dw #4005,#c1,c1,#80ff,t_lp_cutoff1,#c1,c1+1,#80ff,t_lp_cutoff1
-    dw #4005,#c1,c0,#2001,t_lp_cutoff1,#c1,0,0,t_filter_off
-    dw #4005,#c1,c0,#2001,t_lp_cutoff3,#c1,0,0,t_filter_off
+    dw #1005,#c1,c1,#80ff,t_lp_cutoff1_vol6,#c1,c1+1,#80ff,t_lp_cutoff1_vol6
+    dw #1005,#80,t_lp_cutoff1_vol3,#80,t_lp_cutoff1_vol5
+    dw #1005,#80,t_lp_cutoff1_vol3,#80,t_lp_cutoff1_vol4
+    dw #0805,#80,t_lp_cutoff1_vol3,#80,t_lp_cutoff1_vol3
+    dw #0805,#80,t_lp_cutoff1_vol2,#80,t_lp_cutoff1_vol2
+    dw #1005,#c1,c1,#80ff,t_lp_cutoff1dot5_vol6,#c1,c1+1,#80ff,t_lp_cutoff1dot5_vol6
+    dw #1005,#80,t_lp_cutoff1dot5_vol3,#80,t_lp_cutoff1dot5_vol5
+    dw #1005,#80,t_lp_cutoff1dot5_vol3,#80,t_lp_cutoff1dot5_vol4
+    dw #0805,#80,t_lp_cutoff1dot5_vol3,#80,t_lp_cutoff1dot5_vol3
+    dw #0805,#80,t_lp_cutoff1dot5_vol2,#80,t_lp_cutoff1dot5_vol2
+    dw #4005,#c1,c0,#2001,t_lp_cutoff1_vol6,#c1,0,0,t_filter_off_vol6
+    dw #4005,#c1,c0,#2001,t_lp_cutoff3_vol6,#c1,0,0,t_filter_off_vol6
     db #40
 
 .p01
-    dw #0401,#c1,c1,#2001,t_lp_cutoff1
-    dw #0401,#80,t_lp_cutoff1dot5
-    dw #0401,#80,t_lp_cutoff2
-    dw #0401,#80,t_lp_cutoff3
-    dw #0301,#80,t_lp_cutoff4
-    dw #0201,#80,t_lp_cutoff5
-    dw #0101,#80,t_filter_off
-    dw #0201,#80,t_lp_cutoff5
-    dw #0301,#80,t_lp_cutoff4
-    dw #0401,#80,t_lp_cutoff3
-    dw #0401,#80,t_lp_cutoff2
-    dw #0401,#80,t_lp_cutoff1dot5
-    dw #0401,#80,t_lp_cutoff1
+    dw #0401,#c1,c1,#2001,t_lp_cutoff1_vol6
+    dw #0401,#80,t_lp_cutoff1dot5_vol6
+    dw #0401,#80,t_lp_cutoff2_vol6
+    dw #0401,#80,t_lp_cutoff3_vol6
+    dw #0301,#80,t_lp_cutoff4_vol6
+    dw #0201,#80,t_lp_cutoff5_vol6
+    dw #0101,#80,t_filter_off_vol6
+    dw #0201,#80,t_lp_cutoff5_vol6
+    dw #0301,#80,t_lp_cutoff4_vol6
+    dw #0401,#80,t_lp_cutoff3_vol6
+    dw #0401,#80,t_lp_cutoff2_vol6
+    dw #0401,#80,t_lp_cutoff1dot5_vol6
+    dw #0401,#80,t_lp_cutoff1_vol6
 
-    dw #0401,#c1,c2,#2001,t_lp_cutoff1
-    dw #0401,#80,t_lp_cutoff1dot5
-    dw #0401,#80,t_lp_cutoff2
-    dw #0401,#80,t_lp_cutoff3
-    dw #0301,#80,t_lp_cutoff4
-    dw #0201,#80,t_lp_cutoff5
-    dw #0101,#80,t_filter_off
-    dw #0201,#80,t_lp_cutoff5
-    dw #0301,#80,t_lp_cutoff4
-    dw #0401,#80,t_lp_cutoff3
-    dw #0401,#80,t_lp_cutoff2
-    dw #0401,#80,t_lp_cutoff1dot5
-    dw #0401,#80,t_lp_cutoff1
+    dw #0401,#c1,c2,#2001,t_lp_cutoff1_vol6
+    dw #0401,#80,t_lp_cutoff1dot5_vol6
+    dw #0401,#80,t_lp_cutoff2_vol6
+    dw #0401,#80,t_lp_cutoff3_vol6
+    dw #0301,#80,t_lp_cutoff4_vol6
+    dw #0201,#80,t_lp_cutoff5_vol6
+    dw #0101,#80,t_filter_off_vol6
+    dw #0201,#80,t_lp_cutoff5_vol5
+    dw #0301,#80,t_lp_cutoff4_vol4
+    dw #0401,#80,t_lp_cutoff3_vol3
+    dw #0401,#80,t_lp_cutoff2_vol2
+    dw #0801,#80,t_lp_cutoff1_vol2
 
     db #40
 
 .p02
-    dw #1085,.kick,#280,#ff51,#c1,c1,#2001,t_lp_cutoff1,#c1,g2,#4001,t_filter_off
-    dw #1005,#c1,c2,#2001,t_lp_cutoff1,#80,t_lp_cutoff5
-    dw #1005,#c1,c3,#2001,t_lp_cutoff1,#80,t_lp_cutoff4
-    dw #1085,.kick,#280,#5501,#c1,c2,#2001,t_lp_cutoff1,#80,t_lp_cutoff3
+    dw #1085,.kick,#280,#ff51,#c1,c1,#2001,t_lp_cutoff1_vol6,#c1,g2,#4001,t_filter_off_vol6
+    dw #1005,#c1,c2,#2001,t_lp_cutoff1_vol6,#80,t_lp_cutoff5_vol6
+    dw #1005,#c1,c3,#2001,t_lp_cutoff1_vol6,#80,t_lp_cutoff4_vol6
+    dw #1085,.kick,#280,#5501,#c1,c2,#2001,t_lp_cutoff1_vol6,#80,t_lp_cutoff3_vol6
 
-    dw #1085,.kick,#280,#5551,#c1,c1,#2001,t_lp_cutoff1dot5,#c1,g2,#4001,t_lp_cutoff2
-    dw #1081,.kick,#280,#5511,#c1,c2,#2001,t_lp_cutoff1dot5
-    dw #1085,.nois,#280,#ff50,#c1,c3,#2001,t_lp_cutoff1dot5,#c1,g2,#4001,t_lp_cutoff1dot5
-    dw #1001,#c1,c2,#2001,t_lp_cutoff1dot5
+    dw #1085,.kick,#280,#5551,#c1,c1,#2001,t_lp_cutoff1dot5_vol6,#c1,g2,#4001,t_lp_cutoff2_vol6
+    dw #1081,.kick,#280,#5511,#c1,c2,#2001,t_lp_cutoff1dot5_vol6
+    dw #1085,.nois,#280,#ff50,#c1,c3,#2001,t_lp_cutoff1dot5_vol6,#c1,g2,#4001,t_lp_cutoff1dot5_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff1dot5_vol6
 
-    dw #1005,#c1,c1,#2001,t_lp_cutoff2,#c1,g2,#4001,t_lp_cutoff1
-    dw #1001,#c1,c2,#2001,t_lp_cutoff2
-    dw #1001,#c1,c3,#2001,t_lp_cutoff2
-    dw #1001,#c1,c2,#2001,t_lp_cutoff2
+    dw #1005,#c1,c1,#2001,t_lp_cutoff2_vol6,#c1,g2,#4001,t_lp_cutoff1_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff2_vol6
+    dw #1001,#c1,c3,#2001,t_lp_cutoff2_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff2_vol6
 
-    dw #1001,#c1,c1,#2001,t_lp_cutoff3
-    dw #1001,#c1,c2,#2001,t_lp_cutoff3
-    dw #1085,.kick,#280,#ff51,#c1,c3,#2001,t_lp_cutoff3,#c1,f2,#4001,t_lp_cutoff1
-    dw #1001,#c1,c2,#2001,t_lp_cutoff3
+    dw #1001,#c1,c1,#2001,t_lp_cutoff3_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff3_vol6
+    dw #1085,.kick,#280,#ff51,#c1,c3,#2001,t_lp_cutoff3_vol6,#c1,f2,#4001,t_lp_cutoff1_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff3_vol6
 
-    dw #1085,.kick,#280,#ff51,#c1,c1,#2001,t_lp_cutoff4,#c1,c0,#4001,t_lp_cutoff1
-    dw #1001,#c1,c2,#2001,t_lp_cutoff4
-    dw #1001,#c1,c3,#2001,t_lp_cutoff4
-    dw #0881,.kick,#120,#5550,#c1,c2,#2001,t_lp_cutoff4
+    dw #1085,.kick,#280,#ff51,#c1,c1,#2001,t_lp_cutoff4_vol6,#c1,c0,#4001,t_lp_cutoff1_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff4_vol6
+    dw #1001,#c1,c3,#2001,t_lp_cutoff4_vol6
+    dw #0881,.kick,#120,#5550,#c1,c2,#2001,t_lp_cutoff4_vol6
     dw #0880,.kick,#120,#5550
 
-    dw #1081,.kick,#280,#ff51,#c1,c1,#2001,t_lp_cutoff5
-    dw #1081,.kick,#280,#ff11,#c1,c2,#2001,t_lp_cutoff5
-    dw #1001,#c1,c3,#2001,t_lp_cutoff5
-    dw #1001,#c1,c2,#2001,t_lp_cutoff5
+    dw #1081,.kick,#280,#ff51,#c1,c1,#2001,t_lp_cutoff5_vol6
+    dw #1081,.kick,#280,#ff11,#c1,c2,#2001,t_lp_cutoff5_vol6
+    dw #1001,#c1,c3,#2001,t_lp_cutoff5_vol6
+    dw #1001,#c1,c2,#2001,t_lp_cutoff5_vol6
 
-    dw #1001,#c1,c1,#2001,t_filter_off
-    dw #1001,#c1,c2,#2001,t_filter_off
-    dw #1001,#c1,c3,#2001,t_filter_off
-    dw #1001,#c1,c2,#2001,t_filter_off
+    dw #1001,#c1,c1,#2001,t_filter_off_vol6
+    dw #1001,#c1,c2,#2001,t_filter_off_vol5
+    dw #1001,#c1,c3,#2001,t_filter_off_vol4
+    dw #1001,#c1,c2,#2001,t_filter_off_vol3
 
 
-    dw #1005,#c1,c1,#2001,t_hp_cutoff1,#c1,dis1,#4001,t_lp_cutoff1
-    dw #1001,#c1,c2,#2001,t_hp_cutoff1
-    dw #1001,#c1,c3,#2001,t_hp_cutoff1
-    dw #1001,#c1,c2,#2001,t_hp_cutoff1
+    dw #1005,#c1,c1,#2001,t_hp_cutoff1_vol6,#c1,dis1,#4001,t_lp_cutoff1_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff1_vol5
+    dw #1001,#c1,c3,#2001,t_hp_cutoff1_vol4
+    dw #1001,#c1,c2,#2001,t_hp_cutoff1_vol3
 
-    dw #1001,#c1,c1,#2001,t_hp_cutoff2
-    dw #1001,#c1,c2,#2001,t_hp_cutoff2
-    dw #1001,#c1,c3,#2001,t_hp_cutoff2
-    dw #1001,#c1,c2,#2001,t_hp_cutoff2
+    dw #1001,#c1,c1,#2001,t_hp_cutoff2_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff2_vol5
+    dw #1001,#c1,c3,#2001,t_hp_cutoff2_vol4
+    dw #1001,#c1,c2,#2001,t_hp_cutoff2_vol3
 
-    dw #1001,#c1,c1,#2001,t_hp_cutoff3
-    dw #1001,#c1,c2,#2001,t_hp_cutoff3
-    dw #1005,#c1,c3,#2001,t_hp_cutoff3,#c1,d1,#4001,t_lp_cutoff1
-    dw #1001,#c1,c2,#2001,t_hp_cutoff3
+    dw #1001,#c1,c1,#2001,t_hp_cutoff3_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff3_vol5
+    dw #1005,#c1,c3,#2001,t_hp_cutoff3_vol4,#c1,d1,#4001,t_lp_cutoff1_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff3_vol4
 
-    dw #1001,#c1,c1,#2001,t_hp_cutoff4
-    dw #1001,#c1,c2,#2001,t_hp_cutoff4
-    dw #1001,#c1,c3,#2001,t_hp_cutoff4
-    dw #1001,#c1,c2,#2001,t_hp_cutoff4
+    dw #1001,#c1,c1,#2001,t_hp_cutoff4_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff4_vol6
+    dw #1001,#c1,c3,#2001,t_hp_cutoff4_vol5
+    dw #1001,#c1,c2,#2001,t_hp_cutoff4_vol5
 
-    dw #1001,#c1,c1,#2001,t_hp_cutoff5
-    dw #1001,#c1,c2,#2001,t_hp_cutoff5
-    dw #1001,#c1,c3,#2001,t_hp_cutoff5
-    dw #1001,#c1,c2,#2001,t_hp_cutoff5
+    dw #1001,#c1,c1,#2001,t_hp_cutoff5_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff5_vol6
+    dw #1001,#c1,c3,#2001,t_hp_cutoff5_vol6
+    dw #1001,#c1,c2,#2001,t_hp_cutoff5_vol6
 
     db #40
 
