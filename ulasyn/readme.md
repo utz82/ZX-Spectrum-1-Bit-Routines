@@ -12,7 +12,7 @@ a ZX Spectrum beeper engine with filters
 - volume control (up to 6 levels)
 - filters with variable cutoff (6 levels for lo-pass, 5 levels for hi-pass)
 - sample rate 9114 Hz
-- interrupting PWM sampled drums at 18229 Hz with 7 pitch and 3 volume levels
+- interrupting PWM sampled drums at 18229 Hz with 7 pitch and 7 volume levels
 - player size 3333 bytes (when assembled at a 256b border)
 
 
