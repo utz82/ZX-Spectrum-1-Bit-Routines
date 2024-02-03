@@ -472,19 +472,19 @@ t_lp_cutoff1_vol6
 
     align 8
 t_lp_cutoff2_vol2
-    LP 3,6
+    LP 3,2
 
     align 8
 t_lp_cutoff2_vol3
-    LP 3,6
+    LP 3,3
 
     align 8
 t_lp_cutoff2_vol4
-    LP 3,6
+    LP 3,4
 
     align 8
 t_lp_cutoff2_vol5
-    LP 3,6
+    LP 3,5
 
     align 8
 t_lp_cutoff2_vol6
@@ -492,15 +492,15 @@ t_lp_cutoff2_vol6
 
     align 8
 t_lp_cutoff3_vol2
-    LP 3,6
+    LP 3,2
 
     align 8
 t_lp_cutoff3_vol3
-    LP 3,6
+    LP 3,3
 
     align 8
 t_lp_cutoff3_vol4
-    LP 3,6
+    LP 3,4
 
 
     display "vol 1 end: ",$
@@ -595,7 +595,7 @@ exit_player
 
     align 16
 t_lp_cutoff3_vol5
-    LP 3,6
+    LP 3,5
 
     align 8
 t_lp_cutoff3_vol6
@@ -603,19 +603,19 @@ t_lp_cutoff3_vol6
 
     align 8
 t_lp_cutoff4_vol2
-    LP 4,6
+    LP 4,2
 
     align 8
 t_lp_cutoff4_vol3
-    LP 4,6
+    LP 4,3
 
     align 8
 t_lp_cutoff4_vol4
-    LP 4,6
+    LP 4,4
 
     align 8
 t_lp_cutoff4_vol5
-    LP 4,6
+    LP 4,5
 
     align 8
 t_lp_cutoff4_vol6
@@ -726,90 +726,106 @@ t_lp_cutoff5_vol5
 t_lp_cutoff5_vol6
     LP 5,6
 
+    ;; dot5 filters do +2 on rising edge, -1 on falling edge
     align 8
 t_lp_cutoff1dot5_vol2
     db 0                        ; 0->0
-    db 1                        ; 0->6
+    db 2                        ; 0->6
     db 0                        ; 1->0
     db 2                        ; 1->6
-    db 0                        ; 2->0
+    db 1                        ; 2->0
     db 2                        ; 2->6
-    db 1                        ; 3->0
+    db 2                        ; 3->0
     db 2                        ; 3->6
-    db 0                        ; 4->0
+    db 2                        ; 4->0
     db 2                        ; 4->6
-    db 1                        ; 5->0
+    db 2                        ; 5->0
     db 2                        ; 5->6
-    db 1                        ; 6->0
+    db 2                        ; 6->0
     db 2                        ; 6->6
 
     align 8
 t_lp_cutoff1dot5_vol3
     db 0                        ; 0->0
-    db 1                        ; 0->6
+    db 2                        ; 0->6
     db 0                        ; 1->0
-    db 2                        ; 1->6
+    db 3                        ; 1->6
     db 1                        ; 2->0
     db 3                        ; 2->6
     db 2                        ; 3->0
     db 3                        ; 3->6
-    db 2                        ; 4->0
+    db 3                        ; 4->0
     db 3                        ; 4->6
-    db 2                        ; 5->0
+    db 3                        ; 5->0
     db 3                        ; 5->6
-    db 1                        ; 6->0
+    db 3                        ; 6->0
     db 3                        ; 6->6
 
     align 8
 t_lp_cutoff1dot5_vol4
     db 0                        ; 0->0
-    db 1                        ; 0->6
+    db 2                        ; 0->6
     db 0                        ; 1->0
-    db 2                        ; 1->6
+    db 3                        ; 1->6
     db 1                        ; 2->0
-    db 3                        ; 2->6
+    db 4                        ; 2->6
     db 2                        ; 3->0
     db 4                        ; 3->6
-    db 2                        ; 4->0
+    db 3                        ; 4->0
     db 4                        ; 4->6
-    db 3                        ; 5->0
+    db 4                        ; 5->0
     db 4                        ; 5->6
-    db 2                        ; 6->0
+    db 4                        ; 6->0
     db 4                        ; 6->6
 
     align 8
 t_lp_cutoff1dot5_vol5
     db 0                        ; 0->0
-    db 1                        ; 0->6
+    db 2                        ; 0->6
     db 0                        ; 1->0
-    db 2                        ; 1->6
+    db 3                        ; 1->6
     db 1                        ; 2->0
-    db 3                        ; 2->6
+    db 4                        ; 2->6
     db 2                        ; 3->0
     db 5                        ; 3->6
     db 3                        ; 4->0
     db 5                        ; 4->6
-    db 3                        ; 5->0
+    db 4                        ; 5->0
     db 5                        ; 5->6
-    db 4                        ; 6->0
+    db 5                        ; 6->0
     db 5                        ; 6->6
 
     align 8
 t_lp_cutoff1dot5_vol6
     db 0                        ; 0->0
-    db 1                        ; 0->6
+    db 2                        ; 0->6
     db 0                        ; 1->0
-    db 2                        ; 1->6
+    db 3                        ; 1->6
     db 1                        ; 2->0
-    db 5                        ; 2->6
+    db 4                        ; 2->6
     db 2                        ; 3->0
-    db 6                        ; 3->6
+    db 5                        ; 3->6
     db 3                        ; 4->0
     db 6                        ; 4->6
     db 4                        ; 5->0
     db 6                        ; 5->6
     db 5                        ; 6->0
     db 6                        ; 6->6
+
+    ;; db 0                        ; 0->0
+    ;; db 1                        ; 0->6
+    ;; db 0                        ; 1->0
+    ;; db 2                        ; 1->6
+    ;; db 1                        ; 2->0
+    ;; db 5                        ; 2->6
+    ;; db 2                        ; 3->0
+    ;; db 6                        ; 3->6
+    ;; db 3                        ; 4->0
+    ;; db 6                        ; 4->6
+    ;; db 4                        ; 5->0
+    ;; db 6                        ; 5->6
+    ;; db 5                        ; 6->0
+    ;; db 6                        ; 6->6
 
     align 16
 t_hp_cutoff1_vol2

@@ -77,11 +77,6 @@ The first row of a song must contain a full update of both channels.
 - `t_hp_cutoff4_vol5` .. `t_hp_cutoff1_vol6`
 - `t_hp_cutoff5_vol6`
 
-`t_lp_cutoff1dot5_*` are using experimentally derived values which are inexact.
-Their characteristics differ slightly from the other, mathematically derived
-low-pass filters. They will usually be good enough as an intermediate step
-between cutoff1 and cutoff2 in a simulated filter sweep.
-
 You can define your own filter tables. A filter table must be aligned to a
 16-byte border, and must contain 14 entries in the range of 0..6. Each entry *n*
 in the table represents the result of transitioning from volume n>>1 to volume
