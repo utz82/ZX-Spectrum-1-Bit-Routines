@@ -151,8 +151,10 @@ play_drum
     ex af,af'
     ld a,b
     ld (.old_b),a
-    pop hl                      ; drum ptr
-    pop de                      ; drum length (16-bit)
+    pop de                      ; drum ptr
+    pop hl                      ; drum length (16-bit)
+    add hl,hl                   ; pwm renders twice as fast as main, so double length counter
+    ex de,hl
     ld a,iyh
     sub d
     inc a
@@ -160,9 +162,6 @@ play_drum
     xor a
     sub e
     ld iyl,a
-    ex de,hl
-    add hl,hl                   ; pwm renders twice as fast as main, so double length counter
-    ex de,hl
     ld c,(hl)
     inc hl
     exx
