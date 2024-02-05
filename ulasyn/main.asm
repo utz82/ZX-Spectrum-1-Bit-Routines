@@ -8,13 +8,31 @@
     macro LP cutoff, volume
 .start
     dup 14
-    if abs ((($ - .start) >> 1) - (($ & 1) * volume)) > cutoff
-        db (($ - .start) >> 1) - cutoff + (2 * cutoff * ($ & 1))
+    if (($ - .start) >> 1) > volume
+        if ($ & 1) == 0 && ((($ - .start) >> 1) - cutoff) < volume
+                db ((($ - .start) >> 1) - cutoff)
+        else
+                db volume
+        endif
     else
-        db ($ & 1) * volume
+        if abs ((($ - .start) >> 1) - (($ & 1) * volume)) > cutoff
+                db (($ - .start) >> 1) - cutoff + (2 * cutoff * ($ & 1))
+        else
+                db ($ & 1) * volume
+        endif
     endif
     edup
     endm
+
+;; .start
+;;     dup 14
+;;     if abs ((($ - .start) >> 1) - (($ & 1) * volume)) > cutoff
+;;         db (($ - .start) >> 1) - cutoff + (2 * cutoff * ($ & 1))
+;;     else
+;;         db ($ & 1) * volume
+;;     endif
+;;     edup
+;;     endm
 
     macro HP cutoff, volume
 .start
