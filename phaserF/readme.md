@@ -33,8 +33,8 @@ Byte 0 is a control byte. If bit 6 is set, it marks the end of a pattern. If bit
 7 is set, a PWM sample will play on this row. If bit 0 is set, channel 1 is
 updated. If bit 2 is set, channel 2 is updated.
 
-Byte 1 is always the row length in ticks. Then drum and channel data may follow
-according to the initial control byte.
+Byte 1 is always the row length, from 1 to 0x3f ticks. Then drum and channel
+data may follow according to the initial control byte.
 
 A PWM sample trigger consists of 6 bytes:
 
