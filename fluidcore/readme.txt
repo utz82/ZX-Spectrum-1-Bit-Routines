@@ -153,6 +153,8 @@ bit | update track
 6   | 2
 7   | 4
 
+The second byte is the row length, from 1 to 0x3f ticks.
+
 Then, for each track update, 3 bytes follow, consisting of the note frequency
 (LSB, MSB), followed by the MSB of the sample pointer. Tracks are listed in
 order 1..4.
