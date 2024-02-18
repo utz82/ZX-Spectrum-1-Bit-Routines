@@ -12,6 +12,7 @@ Requirements:
 In order to use anteater, you will need
 
 - pasmo or another Z80 assembler of your choice
+- zmakebas for compiling the BASIC loader
 - Perl for compiling the music from an XM file
 - Milkytracker or another XM tracker for writing music
 
@@ -25,7 +26,7 @@ You can set the song speed with the global "Spd" setting, or at any given point 
 Fxx. Valid values are 1..$1f (31). BPM settings are ignored.
 
 Notes go in tracks 1 and 2. Track 1 is the square wave channel, track 2 is the PWM channel.
-You can use notes from C-1 to B-7. However, notes in higher octaves are prone to detuning, 
+You can use notes from C-1 to B-7. However, notes in higher octaves are prone to detuning,
 which is not reflected in the xm template.
 
 You can use manual detune on both tone channels with command E5x.
@@ -62,4 +63,3 @@ Trivia
 
 The name "anteater" is a reference to the game "Ant Attack" by Sandy White and Angela Sutherland,
 which is probably the first game on the Speccy to use pulse interleaving beeper sound.
-

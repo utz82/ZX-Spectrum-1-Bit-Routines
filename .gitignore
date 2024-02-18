@@ -1,0 +1,14 @@
+*.tap
+*.lst
+*.exe
+*.o
+*.bak
+zmakebas
+.clang-format
+fluidcore/music.asm
+fluidcore/samples.asm
+fluidcore/xm2fluid
+octode2k16/xm2octode2k16
+quattropic/xm2quattropic
+squeekerplus/xm2squeekerplus
+zbmod/xm2zbmod

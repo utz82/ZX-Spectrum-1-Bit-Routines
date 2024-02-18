@@ -18,6 +18,7 @@ add user-made samples.
 In order to convert an XM song to a qaop binary, you'll need the following tools:
 
 - an XM tracker, for example Milkytracker (http://milkytracker.org)
+- zmakebas
 - pasmo or a compatible Z80 assembler (http://pasmo.speccy.org)
 - Perl (http://www.perl.org/get.html)
 
@@ -47,7 +48,7 @@ the loop point manually, by moving the "loop" label in music.asm to another
 row in the sequence. You can disable looping altogether by uncommenting line 45
 in main.asm.
 
-When you're done with composing, simply run the provided compile.bat resp. 
+When you're done with composing, simply run the provided compile.bat resp.
 compile.sh scripts to convert your XM file into a ZX Spectrum .tap file. To
 convert only the XM file, run xm2qaop.pl.
 
@@ -73,7 +74,7 @@ samples.asm. Check out the /samples folder for inspiration.
 qaop samples have a fixed length of 256 bytes. The format is unsigned PCM, meaning all bytes
 in the sample denote a relative volume. Bytes can take any value from 0 (silent) to 6 (loudest).
 However, the maximum combined volume level of both channels is 6, so if you want to avoid
-overdrive/distortion, do not use sample volumes >3. It's usually not a problem to use sample 
+overdrive/distortion, do not use sample volumes >3. It's usually not a problem to use sample
 volumes up to 4, though.
 
 You can use the included wav2smp.pl script to convert unsigned raw (header-less) 8-bit PCM WAV
@@ -84,7 +85,7 @@ files to qaop .smp format.
 qaop Music Data Format
 ==========================
 
-The music data consists of an order list containing the sequence of patterns, and the pattern 
+The music data consists of an order list containing the sequence of patterns, and the pattern
 data itself. The order list must be ended with dw #0000, followed by a loop point address.
 Patterns must end with db #40.
 

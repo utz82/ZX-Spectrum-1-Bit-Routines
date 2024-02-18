@@ -12,6 +12,7 @@ Requirements:
 In order to use rawp, you will need
 
 - pasmo or another Z80 assembler of your choice
+- zmakebas
 - Perl for compiling the music from an XM file
 - Milkytracker or another XM tracker for writing music
 
@@ -36,7 +37,7 @@ Instruments 01-11 go in tracks 1 and 2. You can in theory use notes from C-1 to 
   without triggering an instrument. A higher notes means slower slide speed. The counter value
   on channel 1 will wrap once it reaches 0 or 255, use short steps to avoid the retrigger.
   It is ultimately impossible to emulate the actual effect in XM, so it is best edited manually
-  in the asm file. See data format section for details. 
+  in the asm file. See data format section for details.
 
 You can put the hihat (instrument 12) in any channel, it's pitch will be ignored.
 
@@ -65,7 +66,7 @@ byte 1 = speed+hihat or pattern end marker (#ff)
   Speed can be #04..#fc, must be a multiple of 2. Add 1 to the value to trigger the hihat.
 
 byte 2 - instrument ch1
-  Valid values are #00 (silence), #01-#10. Add #80 to the value for pitch slide down, 
+  Valid values are #00 (silence), #01-#10. Add #80 to the value for pitch slide down,
   or #c0 for pitch slide up. See also byte 4. Examples:
 
   Hard kick: db #xx,#81,#08,#00,#10
@@ -77,7 +78,7 @@ byte 3 - note counter value ch1.
 byte 4 - instrument ch2
   Valid values are #00 (silence), #01-#10. You can add #80/#c0 as an auxiliary parameter for
   a pitch slide present on ch1.
-  
+
 byte 5 - note counter value ch2
   Same as byte 3.
 
@@ -88,7 +89,7 @@ rawp Sample Data Format
 If you feel adventurous, you can add your own samples to sampledata.asm, or change the existing
 ones. Samples must be 256 bytes long, and may only consist of values #00 and #10 (unless you
 want funky colors to appear in the border area). The player reads chunks of 4 sample bytes and
-combines them into one volume level. 
+combines them into one volume level.
 
 
 Trivia

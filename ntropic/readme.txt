@@ -12,6 +12,7 @@ Requirements:
 In order to use ntropic, you will need
 
 - pasmo or another Z80 assembler of your choice
+- zmakebas for compiling the BASIC loader
 - Perl for compiling the music from an XM file
 - Milkytracker or another XM tracker for writing music
 

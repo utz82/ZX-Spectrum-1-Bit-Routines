@@ -21,6 +21,7 @@ Requirements
 The following tools are required to use the xm2yawp utility
 
 - an XM tracker, for example Milkytracker (http://milkytracker.org)
+- zmakebas
 - pasmo or a compatible Z80 assembler (http://pasmo.speccy.org)
 - Perl (http://www.perl.org/get.html)
 
@@ -31,8 +32,8 @@ yawp folder.
 Composing Music
 ***************
 
-You can compose music for the yawp player using the XM template that comes 
-bundled with yawp. However, this will only give a very rough estimate of how 
+You can compose music for the yawp player using the XM template that comes
+bundled with yawp. However, this will only give a very rough estimate of how
 the music will sound on an actual ZX Spectrum.
 
 When using the XM template, consider the following:
@@ -40,7 +41,7 @@ When using the XM template, consider the following:
 - You may not change the number of channels.
 - Notes must be in channel 1-3.
 - Changes to the BPM value or to the instruments have no effect.
-- You may change the speed value globally, or at any point by using command Fxx, 
+- You may change the speed value globally, or at any point by using command Fxx,
   where xx must be in the range of 0-$1f.
 - The note range is limited from C-0 to B-4.
 - You may set note detune with command E5x.
@@ -88,14 +89,14 @@ files to yawp .smp format.
 Data Format
 ***********
 
-The music data consists of an order list containing the sequence of patterns, and the pattern 
-data itself. The order list must be ended with a 0-word and must include a "loop" label 
+The music data consists of an order list containing the sequence of patterns, and the pattern
+data itself. The order list must be ended with a 0-word and must include a "loop" label
 somewhere. The shortest legal sequence is thus:
 
 loop
        dw ptn01
        dw 0
-       
+
 Layout of the rows in pattern data is as follows:
 
 offset   length   function

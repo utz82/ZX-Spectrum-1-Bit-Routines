@@ -25,6 +25,7 @@ Requirements
 The following tools are required to use the xm2octode2k15 utility
 
 - an XM tracker, for example Milkytracker (http://milkytracker.org)
+- zmakebas
 - pasmo or a compatible Z80 assembler (http://pasmo.speccy.org)
 - Perl (http://www.perl.org/get.html)
 
@@ -35,8 +36,8 @@ octode2k15 folder.
 Composing Music
 ***************
 
-You can compose music for the Octode 2k15 player using the XM template that 
-comes bundled with Octode2k15. However, this will only give a very rough 
+You can compose music for the Octode 2k15 player using the XM template that
+comes bundled with Octode2k15. However, this will only give a very rough
 estimate of how the music will sound on an actual ZX Spectrum.
 
 When using the XM template, consider the following:
@@ -45,7 +46,7 @@ When using the XM template, consider the following:
 - Notes must be in channel 1-8.
 - Drums must be in channel 9-10, and you cannot set more than one drum per row.
 - Changes to the BPM value or to the instruments have no effect.
-- You may change the speed value globally, or at any point by using command Fxx, 
+- You may change the speed value globally, or at any point by using command Fxx,
   where xx must be in the range of 0-$1f.
 - The note range is limited from C-0 to B-5.
 - You may set note detune with command E5x.
@@ -68,8 +69,8 @@ Data Format
 
 Octode 2k15 music data consists of a song sequence, followed by the pattern data.
 The song sequence is a list of pointers to the actual note patterns, in the order
-in which they are played. The sequence is terminated by a 0-word. At some point 
-in the sequence you must specify the label "loop", which is where the player will 
+in which they are played. The sequence is terminated by a 0-word. At some point
+in the sequence you must specify the label "loop", which is where the player will
 jump to after it has completed the sequence. The shortest possible sequence would
 thus be:
 
@@ -93,4 +94,3 @@ word 9: frequency ch7
 In order to mute a channel, simply set the frequency to 0.
 
 Note patterns are terminated with a single $40 byte.
-
