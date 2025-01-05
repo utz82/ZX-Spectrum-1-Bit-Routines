@@ -25,8 +25,8 @@ _skip_sp_read
     pop hl
     ld a,h
     or l
-IF LOOPING = 1
     jr nz,_set_sp
+IF LOOPING = 1
     pop hl
     ld sp,hl
     jr _skip_sp_read
